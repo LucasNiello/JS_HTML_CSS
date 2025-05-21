@@ -1,0 +1,5 @@
+Git
+
+git config --global user.name "seu nome dentro das aspas"
+git config --global user.email "seu email dentro das aspas"
+

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Área</title>
+</head>
+<body>
+
+  <h2>Calculadora de Área</h2>
+
+  <label>Escolha a figura (círculo, quadrado, triângulo):</label>
+  <select id="figura">
+    <option value="circulo">Círculo</option>
+    <option value="quadrado">Quadrado</option>
+    <option value="triangulo">Triângulo</option>
+  </select>
+
+  <br><br>
+
+  <label>Informe o valor necessário:</label>
+  <input type="number" id="valor1" placeholder="Raio, lado ou base" step="any">
+  
+  <div id="valor2Container" style="display:none;">
+    <label>Informe o segundo valor (altura ou base):</label>
+    <input type="number" id="valor2" placeholder="Altura">
+  </div>
+
+  <button onclick="calcularArea()">Calcular Área</button>
+
+  <p id="resultado"></p>
+
+  <script>
+    // Quando o usuário mudar a forma, mostramos ou ocultamos o campo adicional (segundo valor)
+    document.getElementById("figura").addEventListener("change", function() {
+      let figura = document.getElementById("figura").value;
+      if (figura === "triangulo") {
+        document.getElementById("valor2Container").style.display = "block";
+      } else {
+        document.getElementById("valor2Container").style.display = "none";
+      }
+    });
+
+    function calcularArea() {
+      let figura = document.getElementById("figura").value;
+      let valor1 = parseFloat(document.getElementById("valor1").value);
+      let valor2 = document.getElementById("valor2").value ? parseFloat(document.getElementById("valor2").value) : 0;
+      let area = 0;
+
+      switch (figura) {
+        case "circulo":
+          // Fórmula do círculo: A = π * r^2
+          area = Math.PI * Math.pow(valor1, 2);
+          break;
+        case "quadrado":
+          // Fórmula do quadrado: A = lado^2
+          area = Math.pow(valor1, 2);
+          break;
+        case "triangulo":
+          // Fórmula do triângulo: A = (base * altura) / 2
+          area = (valor1 * valor2) / 2;
+          break;
+        default:
+          area = 0;
+          break;
+      }
+
+      // Exibe o resultado
+      document.getElementById("resultado").innerHTML = `Área da figura: ${area.toFixed(2)}`;
+    }
+  </script>
+
+</body>
+</html>

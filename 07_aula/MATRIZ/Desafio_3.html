@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cnotar os impares</title>
+</head>
+<body>
+
+    <input type="text" id="vetorImpares" placeholder="Digite os números separados por vírgula">
+<button onclick="contarImpares()">Contar Ímpares</button>
+<p id="resultadoImpares"></p>
+
+<script>
+
+    function contarImpares() {
+        const vetor = document.getElementById("vetorImpares").value.split(",").map(Number);
+        let contador = 0;
+
+        for (let i = 0; i < vetor.length; i++) {
+            if (vetor[i] % 2 !== 0) {
+                contador++;
+            }
+        }
+
+        document.getElementById("resultadoImpares").innerHTML = "Quantidade de ímpares: " + contador;
+    }
+
+</script>
+    
+</body>
+</html>

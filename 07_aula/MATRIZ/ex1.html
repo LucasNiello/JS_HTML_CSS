@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <input type="text" id="matrizSomaElementos" placeholder="Digite 9 números separados por virgula (3x3)">
+    <button onclick="somarElementosMatriz()">Somar Elementos</button>
+    <p id="resultadoSomaElementos"></p>
+
+    <script>
+
+function somarElementosMatriz() {
+    const vetor = document.getElementById("matrizSomaElementos").value.split(",").map(Number);
+    let soma = 0;
+    for (let i = 0; i < vetor.length; i ++){
+        soma += vetor[i];
+    }
+    document.getElementById("resultadoSomaElementos").innerHTML = "Soma: " + soma;
+}
+
+    </script>
+    
+</body>
+</html>

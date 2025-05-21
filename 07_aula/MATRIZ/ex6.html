@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <input type="text" id="matrizPares" placeholder="Digite 16 números separados por vírgula (4x4)">
+    <button onclick="contarParesMatriz()"> Contar Pares</button>
+    <p id="resultadoParesMatriz"></p> <!-- Corrigido ID -->
+
+    <script>
+
+        let matriz = []; // Corrigido erro de digitação "mamtriz" -> "matriz"
+        
+        function contarParesMatriz() {
+            const vetor = document.getElementById("matrizPares").value.split(",").map(Number);
+            for (let i = 0; i < 4; i++) {
+                matriz[i] = vetor.slice(i * 4, (i + 1) * 4);
+            }
+            let pares = 0;
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    if (matriz[i][j] % 2 === 0) { // Corrigido erro de sintaxe "% === 0" -> "% 2 === 0"
+                        pares++;
+                    }
+                }
+            }
+            document.getElementById("resultadoParesMatriz").innerHTML = "Pares: " + pares; // Corrigido ID
+        }
+
+    </script>
+
+</body>
+</html>

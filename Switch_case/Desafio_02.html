@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Classificação de Notas</title>
+</head>
+<body>
+
+  <h2>Classificador de Notas</h2>
+
+  <label>Digite uma nota (0 a 10):</label>
+  <input type="number" id="nota" min="0" max="10">
+  <button onclick="classificarNota()">Ver Classificação</button>
+
+  <p id="resultado"></p>
+
+  <script>
+    function classificarNota() {
+      let nota = parseInt(document.getElementById("nota").value);
+      let classificacao = "";
+
+        //Arredondando pra garantir que switch funcione com números inteiros
+      switch (true) {
+        case (nota >= 9 && nota <= 10):
+          classificacao = "A";
+          break;
+        case (nota >= 8):
+          classificacao = "B";
+          break;
+        case (nota >= 6):
+          classificacao = "C";
+          break;
+        case (nota >= 4):
+          classificacao = "D";
+          break;
+        case (nota >= 0):
+          classificacao = "F";
+          break;
+        default:
+          classificacao = "Nota inválida";
+      }
+
+      document.getElementById("resultado").innerHTML = `Classificação: ${classificacao}`;
+    }
+  </script>
+
+</body>
+</html>

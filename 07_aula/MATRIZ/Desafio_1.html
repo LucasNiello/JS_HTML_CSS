@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>//1 calcular media do vetor</title>
+</head>    
+<body>
+
+
+  <input type="text" id="vetorMedia" placeholder="Digite os números separados por vírgula">
+<button onclick="calcularMedia()">Calcular Média</button>
+<p id="resultadoMedia"></p>
+
+<script>
+
+    function calcularMedia() {
+        const vetor = document.getElementById("vetorMedia").value.split(",").map(Number);
+        let soma = 0;
+        for (let i = 0; i < vetor.length; i++) {
+            soma += vetor[i];
+        }
+        let media = soma / vetor.length;
+        document.getElementById("resultadoMedia").innerHTML = "Média: " + media;
+    }
+
+</script>
+
+</body>
+</html>

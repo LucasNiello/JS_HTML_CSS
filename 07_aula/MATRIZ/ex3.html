@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>somar linhas - Matriz</title>
+</head>
+<body>
+
+<input type="text" id="matrizSomaLinhas" placeholder="Digite 9 números separados por vírgula (3x3)">
+<button onclick="somarLinhasMatriz()">Somar Elementos</button>
+<p id="resultadoSomaLinhas"></p>
+
+<script>
+    function somarLinhasMatriz() {
+        const vetor = document.getElementById("matrizSomaLinhas").value.split(",").map(Number);
+        const matriz = []; // Corrigido o nome da variável
+        
+        for (let i = 0; i < 3; i++) {
+            matriz[i] = vetor.slice(i * 3, (i + 1) * 3); // Corrigido erro na referência a 'matriz'
+        }
+
+        let resultado = "";
+        for (let i = 0; i < 3; i++) {
+            let soma = 0;
+            for (let j = 0; j < 3; j++) {
+                soma += matriz[i][j];
+            }
+            resultado += "Linha " + (i + 1) + ": " + soma + "<br>";
+        }
+        
+        document.getElementById("resultadoSomaLinhas").innerHTML = resultado;
+    }
+</script>
+
+
+</body>
+</html>

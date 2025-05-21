@@ -1,0 +1,41 @@
+/* Seu estilo da caixa do semáforo e luzes está perfeito */
+.semaforo {
+    width: 100px;
+    height: 300px;
+    background-color: black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+}
+
+.luz {
+    width: 70px;
+    height: 70px;
+    background-color: gray;
+    border-radius: 50%;
+    transition: background-color 0.5s;
+}
+
+/* Estas são as classes que o JS ativa — estavam faltando */
+.vermelha {
+    background-color: red;
+}
+
+.laranja {
+    background-color: orange;
+}
+
+.amarela {
+    background-color: yellow;
+}
+
+.verde {
+    background-color: green;
+}
+
+.azul {
+    background-color: blue;
+}

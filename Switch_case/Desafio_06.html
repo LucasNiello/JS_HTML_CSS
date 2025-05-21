@@ -1,0 +1,92 @@
+<!-- Loja de Roupas -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Loja de Roupas</title>
+</head>
+<body>
+
+  <h2>Loja de Roupas</h2>
+
+  <label>Escolha o tipo de roupa:</label>
+  <select id="roupa">
+    <option value="camisa">Camisa (R$ 50,00)</option>
+    <option value="calca">Calça (R$ 80,00)</option>
+    <option value="vestido">Vestido (R$ 120,00)</option>
+  </select>
+  <button onclick="adicionarProduto()">Adicionar Produto</button>
+
+  <h3>Itens na Compra:</h3>
+  <ul id="listaProdutos"></ul>
+
+  <h3>Total da Compra</h3>
+  <p id="precoTotal">Preço Total: R$ 0,00</p>
+  <p id="precoFinal">Preço Final (com desconto, se aplicável): R$ 0,00</p>
+
+  <script>
+    let produtos = [];
+    let totalCompra = 0;
+
+    // Função para adicionar o produto à lista de compras
+    function adicionarProduto() {
+      let roupa = document.getElementById("roupa").value;
+      let preco = 0;
+
+      // Usando switch para definir o preço com base no tipo de roupa
+      switch (roupa) {
+        case "camisa":
+          preco = 50;
+          break;
+        case "calca":
+          preco = 80;
+          break;
+        case "vestido":
+          preco = 120;
+          break;
+        default:
+          preco = 0;
+          break;
+      }
+
+      // Adiciona o produto e preço à lista de produtos
+      produtos.push({ nome: roupa, preco: preco });
+      totalCompra += preco;
+
+      // Atualiza a lista de produtos
+      atualizarListaProdutos();
+
+      // Atualiza o preço total
+      atualizarPrecoFinal();
+    }
+
+    // Função para atualizar a lista de produtos
+    function atualizarListaProdutos() {
+      let listaProdutos = document.getElementById("listaProdutos");
+      listaProdutos.innerHTML = "";  // Limpa a lista
+
+      produtos.forEach((produto, index) => {
+        let item = document.createElement("li");
+        item.textContent = `${produto.nome.charAt(0).toUpperCase() + produto.nome.slice(1)} - R$ ${produto.preco.toFixed(2)}`;
+        listaProdutos.appendChild(item);
+      });
+    }
+
+    // Função para atualizar o preço final
+    function atualizarPrecoFinal() {
+      let precoComDesconto = totalCompra;
+
+      // Aplica o desconto de 10% se o total for superior a R$ 100
+      if (totalCompra > 100) {
+        precoComDesconto = totalCompra * 0.9;
+      }
+
+      // Exibe o preço total e o preço final
+      document.getElementById("precoTotal").textContent = `Preço Total: R$ ${totalCompra.toFixed(2)}`;
+      document.getElementById("precoFinal").textContent = `Preço Final (com desconto, se aplicável): R$ ${precoComDesconto.toFixed(2)}`;
+    }
+  </script>
+
+</body>
+</html>

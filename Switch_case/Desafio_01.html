@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Conversor de Moedas Simples</title>
+</head>
+<body>
+
+  <h2>Conversor de Reais para Dólar e Euro</h2>
+
+  <label>Valor em Reais (R$):</label>
+  <input type="number" id="reais">
+
+  <label>Taxa do Dólar:</label>
+  <input type="number" id="taxaDolar">
+
+  <label>Taxa do Euro:</label>
+  <input type="number" id="taxaEuro">
+
+  <button onclick="converter()">Converter</button>
+
+  <p id="resultado"></p>
+
+  <script>
+    function converter() {
+      let reais = parseFloat(document.getElementById("reais").value);
+      let taxaDolar = parseFloat(document.getElementById("taxaDolar").value);
+      let taxaEuro = parseFloat(document.getElementById("taxaEuro").value);
+      let resultado = "";
+
+      // Verificando se os dados são válidos
+      if (isNaN(reais) || isNaN(taxaDolar) || isNaN(taxaEuro)) {
+        document.getElementById("resultado").innerHTML = "Preencha todos os campos corretamente.";
+        return;
+      }
+
+      // Vamos usar o switch para cada tipo de moeda
+      for (let moeda of ["dolar", "euro"]) {
+        switch (moeda) {
+          case "dolar":
+            let valorDolar = reais / taxaDolar;
+            resultado += `💵 Valor em Dólar: US$ ${valorDolar.toFixed(2)} <br>`;
+            break;
+
+          case "euro":
+            let valorEuro = reais / taxaEuro;
+            resultado += `💶 Valor em Euro: € ${valorEuro.toFixed(2)} <br>`;
+            break;
+
+          default:
+            resultado += "Moeda não suportada<br>";
+        }
+      }
+
+      document.getElementById("resultado").innerHTML = resultado;
+    }
+  </script>
+
+</body>
+</html>
+
+
+<!-- OBSERVAÇÕES: -->
+
+<!-- Emoji | Significado | Código Unicode
+💸 | Dinheiro voando | \u1F4B8
+🤑 | Cara com olhos de cifrão | \u1F911
+💵 | Nota de dólar | \u1F4B5
+💶 | Nota de euro | \u1F4B6
+💰 | Saco de dinheiro | \u1F4B0 -->

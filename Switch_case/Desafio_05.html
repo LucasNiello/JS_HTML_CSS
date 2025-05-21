@@ -1,0 +1,85 @@
+<!-- Mecânica de Carros -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Mecânica de Carros</title>
+</head>
+<body>
+
+  <h2>Consulta de Carro e Serviços</h2>
+
+  <label>Digite o modelo do carro:</label>
+  <input type="text" id="modelo" placeholder="Ex: Fusca, Golf, Camaro">
+  <button onclick="consultarCarro()">Ver Informações</button>
+
+  <h3>Informações do Carro</h3>
+  <p id="infoCarro"></p>
+
+  <h3>Serviços Realizados</h3>
+  <label>Digite o valor do serviço realizado (R$):</label>
+  <input type="number" id="valorServico" placeholder="Valor do serviço">
+  <button onclick="adicionarServico()">Adicionar Serviço</button>
+
+  <p id="relatorio"></p>
+
+  <script>
+    // Variáveis para armazenar os valores dos serviços
+    let totalServicos = 0;
+    let servicos = [];
+
+    function consultarCarro() {
+      let modelo = document.getElementById("modelo").value.toLowerCase();
+      let info = "";
+
+      // Usando switch para definir as informações do carro com base no modelo
+      switch (modelo) {
+        case "fusca":
+          info = "Modelo: Fusca\nPreço: R$ 30.000\nAno: 1970\nCombustível: Gasolina";
+          break;
+        case "golf":
+          info = "Modelo: Golf\nPreço: R$ 80.000\nAno: 2015\nCombustível: Gasolina";
+          break;
+        case "camaro":
+          info = "Modelo: Camaro\nPreço: R$ 150.000\nAno: 2020\nCombustível: Gasolina";
+          break;
+        case "civic":
+          info = "Modelo: Civic\nPreço: R$ 120.000\nAno: 2018\nCombustível: Flex";
+          break;
+        case "fiesta":
+          info = "Modelo: Fiesta\nPreço: R$ 45.000\nAno: 2012\nCombustível: Etanol";
+          break;
+        default:
+          info = "Modelo de carro não encontrado!";
+      }
+
+      // Exibe as informações do carro
+      document.getElementById("infoCarro").innerText = info;
+    }
+
+    function adicionarServico() {
+      let valorServico = parseFloat(document.getElementById("valorServico").value);
+      
+      // Verifica se o valor do serviço é válido
+      if (!isNaN(valorServico) && valorServico > 0) {
+        servicos.push(valorServico);
+        totalServicos += valorServico;
+        atualizarRelatorio();
+      } else {
+        alert("Por favor, insira um valor válido para o serviço.");
+      }
+    }
+
+    function atualizarRelatorio() {
+      let relatorio = "Serviços Realizados:\n";
+      servicos.forEach((valor, index) => {
+        relatorio += `Serviço ${index + 1}: R$ ${valor.toFixed(2)}\n`;
+      });
+      relatorio += `\nTotal dos Serviços: R$ ${totalServicos.toFixed(2)}`;
+      document.getElementById("relatorio").innerText = relatorio;
+    }
+  </script>
+
+</body>
+</html>

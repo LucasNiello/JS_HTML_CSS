@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dispositivos Antigos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    select, button {
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #6366f1;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #4f46e5;
+    }
+
+    #info {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #222;
+      background-color: #f0f0f5;
+      padding: 15px;
+      border-radius: 10px;
+    }
+  </style>
+  
+</head>
+<body>
+
+<div class="container">
+  <h2>Dispositivos Antigos</h2>
+  <label for="dispositivo">Escolha um dispositivo:</label>
+  <select id="dispositivo">
+    <option value="">-- Selecione --</option>
+    <option value="fita">Fita Cassete</option>
+    <option value="cd">CD</option>
+    <option value="dvd">DVD</option>
+  </select>
+  <button onclick="mostrarInfo()">Mostrar Informações</button>
+
+  <div id="info"></div>
+</div>
+
+<script>
+  function mostrarInfo() {
+    const escolha = document.getElementById("dispositivo").value;
+    let texto = "";
+
+    switch (escolha) {
+      case "fita":
+        texto = "🎵 A Fita Cassete foi muito popular entre os anos 1970 e 1990. Era usada para gravar músicas, fazer mixtapes e ouvir em walkmans e toca-fitas.";
+        break;
+      case "cd":
+        texto = "💿 O CD (Compact Disc) surgiu nos anos 80 e revolucionou o armazenamento de músicas e dados, com mais qualidade de som e capacidade digital.";
+        break;
+      case "dvd":
+        texto = "📀 O DVD (Digital Versatile Disc) foi lançado nos anos 90 e se destacou por permitir filmes em alta qualidade, com áudio multicanal e legendas.";
+        break;
+      default:
+        texto = "Por favor, selecione um dispositivo da lista.";
+    }
+
+    document.getElementById("info").innerText = texto;
+  }
+</script>
+
+</body>
+</html>

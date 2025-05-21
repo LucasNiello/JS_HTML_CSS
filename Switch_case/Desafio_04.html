@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Estações do Ano</title>
+</head>
+<body>
+
+  <h2>Descubra a Estação do Ano</h2>
+
+  <label>Digite um número de 1 a 12 (representando os meses):</label>
+  <input type="number" id="mes" min="1" max="12">
+  <button onclick="mostrarEstacao()">Ver Estação</button>
+
+  <p id="resultado"></p>
+
+  <script>
+    function mostrarEstacao() {
+      let mes = parseInt(document.getElementById("mes").value);
+      let estacao = "";
+
+      // Usando switch para definir a estação do ano com base no mês
+      switch (mes) {
+        case 12:
+        case 1:
+        case 2:
+          estacao = "Verão";
+          break;
+        case 3:
+        case 4:
+        case 5:
+          estacao = "Outono";
+          break;
+        case 6:
+        case 7:
+        case 8:
+          estacao = "Inverno";
+          break;
+        case 9:
+        case 10:
+        case 11:
+          estacao = "Primavera";
+          break;
+        default:
+          estacao = "Mês inválido! Digite um número de 1 a 12.";
+          break;
+      }
+
+      document.getElementById("resultado").innerHTML = `A estação correspondente é: ${estacao}`;
+    }
+  </script>
+
+</body>
+</html>
+
+<!-- 
+Cada estação cobre três meses:
+
+Verão: Dezembro (12), Janeiro (1) e Fevereiro (2).
+
+Outono: Março (3), Abril (4) e Maio (5).
+
+Inverno: Junho (6), Julho (7) e Agosto (8).
+
+Primavera: Setembro (9), Outubro (10) e Novembro (11).
+
+Se o número for inválido (fora de 1 a 12), ele mostra uma mensagem de erro. -->

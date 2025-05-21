@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Descubra seu Signo</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #e0e7ff, #fdf2f8);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #4b5563;
+    }
+
+    label {
+      font-size: 16px;
+      display: block;
+      margin-bottom: 10px;
+      color: #374151;
+    }
+
+    input[type="date"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #6366f1;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #4f46e5;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #111827;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Descubra seu Signo</h2>
+    <label for="nascimento">Informe sua data de nascimento:</label>
+    <input type="date" id="nascimento">
+    <button onclick="descobrirSigno()">Ver Signo</button>
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    function descobrirSigno() {
+      const data = new Date(document.getElementById("nascimento").value);
+      const dia = data.getDate();
+      const mes = data.getMonth() + 1;
+
+      let signo = "";
+
+      switch (true) {
+        case (mes === 1 && dia >= 20) || (mes === 2 && dia <= 18):
+          signo = "Aquário";
+          break;
+        case (mes === 2 && dia >= 19) || (mes === 3 && dia <= 20):
+          signo = "Peixes";
+          break;
+        case (mes === 3 && dia >= 21) || (mes === 4 && dia <= 19):
+          signo = "Áries";
+          break;
+        case (mes === 4 && dia >= 20) || (mes === 5 && dia <= 20):
+          signo = "Touro";
+          break;
+        case (mes === 5 && dia >= 21) || (mes === 6 && dia <= 20):
+          signo = "Gêmeos";
+          break;
+        case (mes === 6 && dia >= 21) || (mes === 7 && dia <= 22):
+          signo = "Câncer";
+          break;
+        case (mes === 7 && dia >= 23) || (mes === 8 && dia <= 22):
+          signo = "Leão";
+          break;
+        case (mes === 8 && dia >= 23) || (mes === 9 && dia <= 22):
+          signo = "Virgem";
+          break;
+        case (mes === 9 && dia >= 23) || (mes === 10 && dia <= 22):
+          signo = "Libra";
+          break;
+        case (mes === 10 && dia >= 23) || (mes === 11 && dia <= 21):
+          signo = "Escorpião";
+          break;
+        case (mes === 11 && dia >= 22) || (mes === 12 && dia <= 21):
+          signo = "Sagitário";
+          break;
+        case (mes === 12 && dia >= 22) || (mes === 1 && dia <= 19):
+          signo = "Capricórnio";
+          break;
+        default:
+          signo = "Data inválida";
+      }
+
+      document.getElementById("resultado").innerText = `Seu signo é: ${signo}`;
+    }
+  </script>
+</body>
+</html>
