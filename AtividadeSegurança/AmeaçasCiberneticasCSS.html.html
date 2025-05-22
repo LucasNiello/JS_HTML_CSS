@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ameaças Cibernéticas</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --dark-bg: #2c3e50;
+            --text-color: #333;
+            --light-text: #f8f9fa;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .criteria {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .criteria h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .criteria-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .criteria-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        
+        .criteria-item .check {
+            color: var(--success-color);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section h2 .number {
+            background-color: var(--secondary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .section h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 0.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .section p {
+            margin-bottom: 1rem;
+        }
+        
+        .risk-list, .protection-list {
+            margin: 1rem 0;
+        }
+        
+        .risk-item, .protection-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        
+        .risk-item .check, .protection-item .check {
+            color: var(--success-color);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .protection-measures {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .protection-measures h4 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .protection-measures ul {
+            list-style-type: none;
+        }
+        
+        .protection-measures li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .protection-measures li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+        }
+        
+        .reflection {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .reflection h2 {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+        
+        .conclusion {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .conclusion h2 {
+            color: var(--light-text);
+            border-bottom: 2px solid var(--secondary-color);
+            display: inline-block;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        footer {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .criteria-list {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Ameaças Cibernéticas</h1>
+            <p>Análise, prevenção e resposta a ataques cibernéticos</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="criteria">
+            <h2>Critérios de Avaliação</h2>
+            <div class="criteria-list">
+                <div class="criteria-item">
+                    <span class="check">✅</span>
+                    <span>Identificar medidas de proteção e prevenção de ataques cibernéticos</span>
+                </div>
+                <div class="criteria-item">
+                    <span class="check">✅</span>
+                    <span>Demonstrar pensamento analítico</span>
+                </div>
+                <div class="criteria-item">
+                    <span class="check">✅</span>
+                    <span>Demonstrar inteligência emocional</span>
+                </div>
+                <div class="criteria-item">
+                    <span class="check">✅</span>
+                    <span>Demonstrar autonomia</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2><span class="number">1</span>Ataques de Phishing</h2>
+            <h3>Como funcionam:</h3>
+            <p>Phishing é uma técnica usada por cibercriminosos para enganar usuários e induzi-los a fornecer informações confidenciais, como senhas ou dados bancários. No cenário descrito, o funcionário recebe um e-mail aparentemente legítimo, mas ao clicar no link, é redirecionado para uma página falsa que coleta suas credenciais.</p>
+            
+            <h3>Como identificar sinais de um e-mail falso:</h3>
+            <div class="risk-list">
+                <div class="risk-item">
+                    <span class="check">✅</span>
+                    <span>Erros de ortografia e gramática.</span>
+                </div>
+                <div class="risk-item">
+                    <span class="check">✅</span>
+                    <span>Endereço de e-mail do remetente estranho ou com domínio suspeito.</span>
+                </div>
+                <div class="risk-item">
+                    <span class="check">✅</span>
+                    <span>Links encurtados ou disfarçados que não correspondem ao site oficial.</span>
+                </div>
+                <div class="risk-item">
+                    <span class="check">✅</span>
+                    <span>Solicitação urgente para fornecer informações confidenciais.</span>
+                </div>
+            </div>
+            
+            <div class="protection-measures">
+                <h4>Medidas de proteção:</h4>
+                <ul>
+                    <li>Não clicar em links suspeitos.</li>
+                    <li>Verificar o endereço de e-mail e o link antes de clicar.</li>
+                    <li>Ativar autenticação de dois fatores (2FA).</li>
+                    <li>Utilizar filtros antiphishing no e-mail.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2><span class="number">2</span>Ataques de Ransomware</h2>
+            <h3>Como funcionam:</h3>
+            <p>O usuário baixa um arquivo infectado de um site desconhecido. O ransomware criptografa todos os arquivos e exige pagamento para liberar os dados.</p>
+            
+            <h3>Riscos:</h3>
+            <div class="risk-list">
+                <div class="risk-item">
+                    <span class="check">✅</span>
+                    <span>Perda total de dados.</span>
+                </div>
+                <div class="risk-item">
+                    <span class="check">✅</span>
+                    <span>Interrupção das operações da empresa.</span>
+                </div>
+                <div class="risk-item">
+                    <span class="check">✅</span>
+                    <span>Danos financeiros e à reputação.</span>
+                </div>
+            </div>
+            
+            <div class="protection-measures">
+                <h4>Medidas de prevenção:</h4>
+                <ul>
+                    <li>Não baixar arquivos de fontes desconhecidas.</li>
+                    <li>Manter antivírus e sistemas sempre atualizados.</li>
+                    <li>Realizar backups regulares e armazená-los offline.</li>
+                    <li>Treinar funcionários sobre segurança digital.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2><span class="number">3</span>Vulnerabilidades</h2>
+            
+            <h3>Cenário de Senhas Fracas</h3>
+            <p><strong>Como funciona:</strong> O atacante utiliza um programa automatizado para testar combinações de senhas simples (ataque de força bruta) até conseguir acessar a conta.</p>
+            
+            <div class="protection-measures">
+                <h4>Medidas de proteção:</h4>
+                <div class="protection-list">
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Criar senhas complexas, com letras maiúsculas, minúsculas, números e símbolos.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Não reutilizar senhas em diferentes serviços.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Implementar autenticação multifator (MFA).</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Utilizar ferramentas de gestão de senhas.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Cenário de Software Desatualizado</h3>
+            <p><strong>Como funciona:</strong> O servidor possui vulnerabilidades conhecidas devido à versão antiga do software, facilitando que o atacante explore essas falhas e obtenha acesso.</p>
+            
+            <div class="protection-measures">
+                <h4>Medidas de proteção:</h4>
+                <div class="protection-list">
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Manter todos os sistemas e softwares atualizados.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Aplicar patches de segurança assim que disponíveis.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Realizar auditorias regulares de segurança.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Utilizar sistemas de monitoramento de vulnerabilidades.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2><span class="number">4</span>Engenharia Social</h2>
+            
+            <h3>Cenário de Pretexting</h3>
+            <p><strong>Como funciona:</strong> O atacante finge ser do departamento de TI e, alegando um problema urgente, convence o funcionário a fornecer informações de login.</p>
+            
+            <div class="protection-measures">
+                <h4>Como se proteger:</h4>
+                <div class="protection-list">
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Sempre verificar a identidade de quem solicita informações confidenciais.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Confirmar pedidos de forma independente (por exemplo, ligar diretamente para o departamento).</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Realizar treinamentos periódicos sobre segurança e engenharia social.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Cenário de Baiting</h3>
+            <p><strong>Como funciona:</strong> Um pendrive infectado é deixado em um local público. A curiosidade leva o funcionário a conectá-lo ao computador, infectando o sistema com malware.</p>
+            
+            <div class="protection-measures">
+                <h4>Medidas de proteção:</h4>
+                <div class="protection-list">
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Nunca conectar dispositivos desconhecidos.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Implantar políticas que proíbam o uso de mídias removíveis não autorizadas.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Utilizar soluções de segurança que bloqueiem automaticamente dispositivos suspeitos.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span>Realizar campanhas de conscientização sobre os riscos.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2><span class="number">5</span>Intervenções e Respostas a Incidentes</h2>
+            
+            <h3>Cenário de Violação de Dados</h3>
+            <p><strong>Como funciona:</strong> Após o acesso não autorizado a dados confidenciais, a equipe de resposta a incidentes precisa agir rapidamente para mitigar os danos.</p>
+            
+            <div class="protection-measures">
+                <h4>Como responder:</h4>
+                <div class="protection-list">
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span><strong>Identificação:</strong> Detectar a violação e analisar a origem do ataque.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span><strong>Contenção:</strong> Isolar os sistemas afetados para impedir a propagação.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span><strong>Erradicação:</strong> Remover o agente malicioso e corrigir vulnerabilidades exploradas.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span><strong>Recuperação:</strong> Restaurar os sistemas e dados a partir de backups seguros.</span>
+                    </div>
+                    <div class="protection-item">
+                        <span class="check">✅</span>
+                        <span><strong>Lições aprendidas:</strong> Revisar os procedimentos para evitar novas ocorrências.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Importância de um plano de resposta a incidentes:</h3>
+            <div class="protection-list">
+                <div class="protection-item">
+                    <span class="check">✅</span>
+                    <span>Minimiza o impacto financeiro e reputacional.</span>
+                </div>
+                <div class="protection-item">
+                    <span class="check">✅</span>
+                    <span>Agiliza a recuperação das operações.</span>
+                </div>
+                <div class="protection-item">
+                    <span class="check">✅</span>
+                    <span>Garante a conformidade com regulamentações e boas práticas de segurança.</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="reflection">
+            <h2>Reflexão Pessoal: Inteligência Emocional e Autonomia</h2>
+            <p>Ao analisar esses cenários, percebo a importância de manter a calma diante de possíveis ameaças e agir de forma racional, sem se deixar levar por impulsos ou pânico — isso demonstra inteligência emocional. Além disso, reconhecer a necessidade de buscar informações, atualizar-se constantemente sobre novas ameaças e adotar medidas preventivas são atitudes que refletem autonomia.</p>
+        </div>
+        
+        <div class="conclusion">
+            <h2>Conclusão</h2>
+            <p>A segurança cibernética é uma responsabilidade coletiva e contínua. A prevenção é sempre mais eficaz e menos custosa do que a remediação após um incidente.</p>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Atividade: Ameaças Cibernéticas | Segurança da Informação</p>
+        </div>
+    </footer>
+</body>
+</html>
