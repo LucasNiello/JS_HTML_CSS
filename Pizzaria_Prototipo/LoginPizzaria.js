@@ -24,7 +24,7 @@ function validarLogin() {
         exibirMensagem("Login realizado com sucesso!", "sucesso");
         setTimeout(() => {
             window.location.href = "PIZZARIA.html"; // Redireciona para a página do cardápio
-        }, 1000);
+        }, 2000);
     } else {
         exibirMensagem("Usuário ou senha incorretos!", "erro");
     }

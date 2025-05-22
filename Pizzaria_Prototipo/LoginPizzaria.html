@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Pizzaria</title>
     <link rel="stylesheet" href="LoginPizzaria.css">
+    <!-- Adicionando Font Awesome para o ícone do Google -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
     <div id="login" class="container">
@@ -20,20 +22,20 @@
             <input type="password" id="senha" placeholder="Digite sua senha">
         </div>
         <button onclick="validarLogin()">Entrar</button>
-        <p id="mensagem" class="mensagem hidden"></p>
-
+        
         <!-- Divisor entre métodos de login -->
         <div class="login-divider">
             <span>ou</span>
         </div>
         
-        <!-- Botão de Login com Google -->
+        <!-- Botão de Login com Google com ícone G estilizado -->
         <button id="google-login" onclick="loginComGoogle()">
-            <i class="fab fa-google"></i> Login com Google
+            <span class="google-icon">G</span> Entrar com Google
         </button>
+        
+        <p id="mensagem" class="mensagem hidden"></p>
     </div>
     <footer>
-
         <p>____© La ROCCA TRATORIA____</p>
     </footer>
     <script src="LoginPizzaria.js"></script>

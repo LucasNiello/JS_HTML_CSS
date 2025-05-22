@@ -1,7 +1,7 @@
 /* LoginPizzaria.css - Estilo elegante com paleta preto e dourado */
 
 /* Importação de fontes */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&family=Roboto:wght@500&display=swap');
 
 /* Variáveis de cores */
 :root {
@@ -13,6 +13,10 @@
     --branco-suave: #f5f5f5;
     --cinza-claro: #e0e0e0;
     --cinza-escuro: #333333;
+    --google-azul: #4285F4;
+    --google-vermelho: #DB4437;
+    --google-amarelo: #F4B400;
+    --google-verde: #0F9D58;
     --sombra-padrao: 0 4px 12px rgba(0, 0, 0, 0.15);
     --sombra-dourada: 0 4px 12px rgba(212, 175, 55, 0.25);
     --transicao: all 0.3s ease;
@@ -157,11 +161,96 @@ button {
     letter-spacing: 1px;
     text-transform: uppercase;
     box-shadow: var(--sombra-dourada);
+    width: 100%;
 }
 
 button:hover {
     background-color: var(--dourado-escuro);
     transform: translateY(-2px);
+}
+
+/* Divisor entre métodos de login */
+.login-divider {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+    color: var(--cinza-claro);
+    font-size: 0.9rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: rgba(212, 175, 55, 0.2);
+}
+
+.login-divider span {
+    padding: 0 15px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+/* Botão de Login com Google */
+#google-login {
+    background-color: var(--preto);
+    color: var(--branco-suave);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 0;
+    position: relative;
+}
+
+/* Ícone G estilizado */
+.google-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #fff;
+    color: var(--preto);
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    position: relative;
+    margin-right: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Efeito multicolorido do Google */
+.google-icon::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+        var(--google-azul) 0deg 90deg,
+        var(--google-vermelho) 90deg 180deg,
+        var(--google-amarelo) 180deg 270deg,
+        var(--google-verde) 270deg 360deg
+    );
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#google-login:hover .google-icon::before {
+    opacity: 1;
+}
+
+#google-login:hover {
+    background-color: rgba(10, 10, 10, 0.9);
+    border-color: var(--dourado-principal);
 }
 
 /* Mensagem de erro/sucesso */

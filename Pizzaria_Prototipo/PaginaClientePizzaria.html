@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tratoria Rocca - Cardápio</title>
+    <link rel="stylesheet" href="PaginaClientePizzaria.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header com logo e navegação -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>Tratoria Rocca</h1>
+                <p class="slogan">Benvenuti a la nostra pizzeria!</p>
+            </div>
+            <nav>
+                <ul class="menu-principal">
+                    <li><a href="#" class="nav-link active" data-target="cardapio"><i class="fas fa-pizza-slice"></i> Cardápio</a></li>
+                    <li><a href="#" class="nav-link" data-target="promocoes"><i class="fas fa-percentage"></i> Promoções</a></li>
+                    <li><a href="#" class="nav-link" data-target="montar-pizza"><i class="fas fa-utensils"></i> Monte Sua Pizza</a></li>
+                    <li><a href="#" class="nav-link" data-target="pizzas-doces"><i class="fas fa-cookie"></i> Pizzas Doces</a></li>
+                    <li><a href="#" class="nav-link" data-target="bebidas"><i class="fas fa-glass-cheers"></i> Bebidas</a></li>
+                </ul>
+            </nav>
+            <div class="carrinho">
+                <a href="#" id="btn-carrinho" class="nav-link" data-target="carrinho-modal">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="contador-itens">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main>
+        <!-- Banner principal -->
+        <section class="banner">
+            <div class="banner-content">
+                <h2>Autêntica Pizza Italiana</h2>
+                <p>Ingredientes frescos e receitas tradicionais</p>
+                <a href="#" class="btn-dourado nav-link" data-target="cardapio">Ver Cardápio</a>
+            </div>
+        </section>
+
+        <!-- Seção de Cardápio -->
+        <section id="cardapio" class="secao active">
+            <div class="secao-header">
+                <h2>Cardápio de Pizzas</h2>
+                <p>Nossas pizzas são preparadas com ingredientes selecionados e técnicas artesanais</p>
+            </div>
+            
+            <div class="filtro-categorias">
+                <button class="filtro-btn active" data-categoria="todas">Todas</button>
+                <button class="filtro-btn" data-categoria="tradicionais">Tradicionais</button>
+                <button class="filtro-btn" data-categoria="gourmet">Gourmet</button>
+                <button class="filtro-btn" data-categoria="premium">Premium</button>
+            </div>
+
+            <div class="grid-produtos">
+                <!-- Pizza 1 -->
+                <div class="card-produto" data-categoria="tradicionais">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza Margherita">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Margherita</h3>
+                        <p class="ingredientes">Molho de tomate italiano, mussarela de búfala, manjericão fresco e azeite extra virgem</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 49,90</span>
+                            <button class="btn-adicionar" data-id="1" data-nome="Margherita" data-preco="49.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza 2 -->
+                <div class="card-produto" data-categoria="tradicionais">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza Calabresa">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Calabresa Especial</h3>
+                        <p class="ingredientes">Molho de tomate italiano, mussarela, calabresa artesanal defumada, cebola roxa e orégano</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 52,90</span>
+                            <button class="btn-adicionar" data-id="2" data-nome="Calabresa Especial" data-preco="52.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza 3 -->
+                <div class="card-produto" data-categoria="gourmet">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza Quatro Queijos">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Quatro Queijos Gourmet</h3>
+                        <p class="ingredientes">Molho de tomate italiano, mussarela de búfala, gorgonzola DOP, parmesão envelhecido e provolone</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 59,90</span>
+                            <button class="btn-adicionar" data-id="3" data-nome="Quatro Queijos Gourmet" data-preco="59.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza 4 -->
+                <div class="card-produto" data-categoria="premium">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza Parma">
+                        <span class="tag-destaque">Premium</span>
+                    </div>
+                    <div class="produto-info">
+                        <h3>Parma com Burrata</h3>
+                        <p class="ingredientes">Molho de tomate italiano, presunto de parma 24 meses, burrata fresca, rúcula selvagem e lascas de parmesão</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 72,90</span>
+                            <button class="btn-adicionar" data-id="4" data-nome="Parma com Burrata" data-preco="72.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza 5 - Filé Mignon -->
+                <div class="card-produto" data-categoria="premium">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza Filé Mignon">
+                        <span class="tag-destaque">Premium</span>
+                    </div>
+                    <div class="produto-info">
+                        <h3>Filé Mignon Trufado</h3>
+                        <p class="ingredientes">Molho de tomate italiano, mussarela, medalhões de filé mignon, cogumelos paris, cebola caramelizada e azeite trufado</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 79,90</span>
+                            <button class="btn-adicionar" data-id="5" data-nome="Filé Mignon Trufado" data-preco="79.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza 6 - Salmão -->
+                <div class="card-produto" data-categoria="premium">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza Salmão">
+                        <span class="tag-destaque">Premium</span>
+                    </div>
+                    <div class="produto-info">
+                        <h3>Salmão com Cream Cheese</h3>
+                        <p class="ingredientes">Base de cream cheese, salmão defumado, alcaparras, cebola roxa, dill fresco e raspas de limão siciliano</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 76,90</span>
+                            <button class="btn-adicionar" data-id="6" data-nome="Salmão com Cream Cheese" data-preco="76.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza 7 - Funghi -->
+                <div class="card-produto" data-categoria="gourmet">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza Funghi">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Funghi Especial</h3>
+                        <p class="ingredientes">Molho de tomate italiano, mix de cogumelos (paris, shimeji e shitake), mussarela de búfala e azeite de ervas</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 65,90</span>
+                            <button class="btn-adicionar" data-id="7" data-nome="Funghi Especial" data-preco="65.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza 8 - Caprese -->
+                <div class="card-produto" data-categoria="gourmet">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza Caprese">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Caprese Gourmet</h3>
+                        <p class="ingredientes">Molho de tomate italiano, mussarela de búfala, tomates cereja confitados, pesto de manjericão fresco e azeite extra virgem</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 62,90</span>
+                            <button class="btn-adicionar" data-id="8" data-nome="Caprese Gourmet" data-preco="62.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Promoções -->
+        <section id="promocoes" class="secao">
+            <div class="secao-header">
+                <h2>Promoções</h2>
+                <p>Ofertas especiais para você aproveitar</p>
+            </div>
+
+            <div class="promocoes-container">
+                <!-- Promoção 1 -->
+                <div class="card-promocao">
+                    <div class="promocao-img">
+                        <img src="https://via.placeholder.com/400x250" alt="Combo Família">
+                        <div class="promocao-tag">30% OFF</div>
+                    </div>
+                    <div class="promocao-info">
+                        <h3>Combo Família Premium</h3>
+                        <p>2 pizzas grandes (tradicional ou gourmet) + refrigerante 2L + borda recheada grátis</p>
+                        <div class="promocao-preco">
+                            <span class="preco-original">R$ 159,80</span>
+                            <span class="preco-promocional">R$ 109,90</span>
+                        </div>
+                        <button class="btn-dourado btn-promocao" data-id="promo1" data-nome="Combo Família Premium" data-preco="109.90">
+                            Aproveitar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Promoção 2 -->
+                <div class="card-promocao">
+                    <div class="promocao-img">
+                        <img src="https://via.placeholder.com/400x250" alt="Terça Gourmet">
+                        <div class="promocao-tag">25% OFF</div>
+                    </div>
+                    <div class="promocao-info">
+                        <h3>Terça Gourmet</h3>
+                        <p>Toda terça-feira, qualquer pizza da categoria gourmet com 25% de desconto</p>
+                        <div class="promocao-preco">
+                            <span class="preco-original">R$ 65,90</span>
+                            <span class="preco-promocional">R$ 49,90</span>
+                        </div>
+                        <button class="btn-dourado btn-promocao" data-id="promo2" data-nome="Terça Gourmet" data-preco="49.90">
+                            Aproveitar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Promoção 3 -->
+                <div class="card-promocao">
+                    <div class="promocao-img">
+                        <img src="https://via.placeholder.com/400x250" alt="Combo Casal">
+                        <div class="promocao-tag">20% OFF</div>
+                    </div>
+                    <div class="promocao-info">
+                        <h3>Combo Casal</h3>
+                        <p>1 pizza grande (qualquer sabor) + 1 pizza doce média + 1 vinho tinto 375ml</p>
+                        <div class="promocao-preco">
+                            <span class="preco-original">R$ 139,70</span>
+                            <span class="preco-promocional">R$ 109,90</span>
+                        </div>
+                        <button class="btn-dourado btn-promocao" data-id="promo3" data-nome="Combo Casal" data-preco="109.90">
+                            Aproveitar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Monte Sua Pizza -->
+        <section id="montar-pizza" class="secao">
+            <div class="secao-header">
+                <h2>Monte Sua Pizza</h2>
+                <p>Crie a pizza perfeita com seus ingredientes favoritos</p>
+            </div>
+
+            <div class="montar-pizza-container">
+                <div class="montar-pizza-opcoes">
+                    <div class="opcoes-grupo">
+                        <h3>1. Escolha o tamanho</h3>
+                        <div class="opcoes-lista">
+                            <div class="opcao-item">
+                                <input type="radio" name="tamanho" id="tamanho-p" value="pequena" data-preco="39.90">
+                                <label for="tamanho-p">Pequena (25cm) - R$ 39,90</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="radio" name="tamanho" id="tamanho-m" value="media" data-preco="49.90" checked>
+                                <label for="tamanho-m">Média (30cm) - R$ 49,90</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="radio" name="tamanho" id="tamanho-g" value="grande" data-preco="59.90">
+                                <label for="tamanho-g">Grande (35cm) - R$ 59,90</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="opcoes-grupo">
+                        <h3>2. Escolha a massa</h3>
+                        <div class="opcoes-lista">
+                            <div class="opcao-item">
+                                <input type="radio" name="massa" id="massa-tradicional" value="tradicional" data-preco="0" checked>
+                                <label for="massa-tradicional">Tradicional - Incluso</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="radio" name="massa" id="massa-fina" value="fina" data-preco="0">
+                                <label for="massa-fina">Fina - Incluso</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="radio" name="massa" id="massa-integral" value="integral" data-preco="5">
+                                <label for="massa-integral">Integral - + R$ 5,00</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="opcoes-grupo">
+                        <h3>3. Escolha os ingredientes</h3>
+                        <p class="subtitulo">Escolha até 5 ingredientes (os 3 primeiros são grátis)</p>
+                        <div class="opcoes-lista ingredientes-lista">
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-mussarela" value="mussarela" data-preco="0">
+                                <label for="ing-mussarela">Mussarela - Incluso</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-mussarela-bufala" value="mussarela-bufala" data-preco="5">
+                                <label for="ing-mussarela-bufala">Mussarela de Búfala - + R$ 5,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-gorgonzola" value="gorgonzola" data-preco="6">
+                                <label for="ing-gorgonzola">Gorgonzola - + R$ 6,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-parmesao" value="parmesao" data-preco="4">
+                                <label for="ing-parmesao">Parmesão - + R$ 4,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-provolone" value="provolone" data-preco="4">
+                                <label for="ing-provolone">Provolone - + R$ 4,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-calabresa" value="calabresa" data-preco="0">
+                                <label for="ing-calabresa">Calabresa - Incluso</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-presunto-parma" value="presunto-parma" data-preco="8">
+                                <label for="ing-presunto-parma">Presunto de Parma - + R$ 8,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-file-mignon" value="file-mignon" data-preco="12">
+                                <label for="ing-file-mignon">Filé Mignon - + R$ 12,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-salmao" value="salmao" data-preco="10">
+                                <label for="ing-salmao">Salmão - + R$ 10,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-cogumelos" value="cogumelos" data-preco="7">
+                                <label for="ing-cogumelos">Mix de Cogumelos - + R$ 7,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-tomate" value="tomate" data-preco="0">
+                                <label for="ing-tomate">Tomate - Incluso</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-tomate-cereja" value="tomate-cereja" data-preco="3">
+                                <label for="ing-tomate-cereja">Tomate Cereja - + R$ 3,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-rucula" value="rucula" data-preco="2">
+                                <label for="ing-rucula">Rúcula - + R$ 2,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-cebola" value="cebola" data-preco="0">
+                                <label for="ing-cebola">Cebola - Incluso</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-cebola-caramelizada" value="cebola-caramelizada" data-preco="3">
+                                <label for="ing-cebola-caramelizada">Cebola Caramelizada - + R$ 3,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-manjericao" value="manjericao" data-preco="0">
+                                <label for="ing-manjericao">Manjericão - Incluso</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-pesto" value="pesto" data-preco="4">
+                                <label for="ing-pesto">Pesto de Manjericão - + R$ 4,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="checkbox" name="ingredientes" id="ing-azeite-trufado" value="azeite-trufado" data-preco="6">
+                                <label for="ing-azeite-trufado">Azeite Trufado - + R$ 6,00</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="opcoes-grupo">
+                        <h3>4. Borda recheada?</h3>
+                        <div class="opcoes-lista">
+                            <div class="opcao-item">
+                                <input type="radio" name="borda" id="borda-sem" value="sem" data-preco="0" checked>
+                                <label for="borda-sem">Sem borda recheada - Incluso</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="radio" name="borda" id="borda-catupiry" value="catupiry" data-preco="8">
+                                <label for="borda-catupiry">Catupiry - + R$ 8,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="radio" name="borda" id="borda-cheddar" value="cheddar" data-preco="8">
+                                <label for="borda-cheddar">Cheddar - + R$ 8,00</label>
+                            </div>
+                            <div class="opcao-item">
+                                <input type="radio" name="borda" id="borda-cream-cheese" value="cream-cheese" data-preco="10">
+                                <label for="borda-cream-cheese">Cream Cheese - + R$ 10,00</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="montar-pizza-resumo">
+                    <div class="resumo-container">
+                        <h3>Resumo do Pedido</h3>
+                        <div class="resumo-itens">
+                            <div class="resumo-item">
+                                <span>Pizza Média (30cm)</span>
+                                <span>R$ 49,90</span>
+                            </div>
+                            <div class="resumo-item">
+                                <span>Massa Tradicional</span>
+                                <span>Incluso</span>
+                            </div>
+                            <div id="resumo-ingredientes">
+                                <!-- Ingredientes selecionados aparecerão aqui -->
+                            </div>
+                            <div id="resumo-borda">
+                                <span>Sem borda recheada</span>
+                                <span>Incluso</span>
+                            </div>
+                        </div>
+                        <div class="resumo-total">
+                            <span>Total</span>
+                            <span id="preco-total">R$ 49,90</span>
+                        </div>
+                        <button class="btn-dourado btn-adicionar-pizza">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Pizzas Doces -->
+        <section id="pizzas-doces" class="secao">
+            <div class="secao-header">
+                <h2>Pizzas Doces</h2>
+                <p>Experimente nossas deliciosas sobremesas</p>
+            </div>
+
+            <div class="grid-produtos">
+                <!-- Pizza Doce 1 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza de Chocolate">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Chocolate com Morango</h3>
+                        <p class="ingredientes">Chocolate belga ao leite, morangos frescos e chocolate branco</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 52,90</span>
+                            <button class="btn-adicionar" data-id="d1" data-nome="Chocolate com Morango" data-preco="52.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza Doce 2 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza de Banana">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Banana com Canela</h3>
+                        <p class="ingredientes">Banana caramelizada, canela, doce de leite artesanal e chocolate belga</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 49,90</span>
+                            <button class="btn-adicionar" data-id="d2" data-nome="Banana com Canela" data-preco="49.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza Doce 3 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza de Nutella">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Nutella Premium</h3>
+                        <p class="ingredientes">Nutella, morangos frescos, avelãs tostadas e confetes de chocolate belga</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 59,90</span>
+                            <button class="btn-adicionar" data-id="d3" data-nome="Nutella Premium" data-preco="59.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pizza Doce 4 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Pizza de Romeu e Julieta">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Romeu e Julieta Gourmet</h3>
+                        <p class="ingredientes">Goiabada cascão artesanal e queijo tipo brie derretido</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 54,90</span>
+                            <button class="btn-adicionar" data-id="d4" data-nome="Romeu e Julieta Gourmet" data-preco="54.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Bebidas -->
+        <section id="bebidas" class="secao">
+            <div class="secao-header">
+                <h2>Bebidas</h2>
+                <p>Acompanhamentos perfeitos para sua pizza</p>
+            </div>
+
+            <div class="grid-produtos grid-bebidas">
+                <!-- Bebida 1 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Refrigerante Cola">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Refrigerante Cola 2L</h3>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 12,90</span>
+                            <button class="btn-adicionar" data-id="b1" data-nome="Refrigerante Cola 2L" data-preco="12.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bebida 2 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Refrigerante Guaraná">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Refrigerante Guaraná 2L</h3>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 11,90</span>
+                            <button class="btn-adicionar" data-id="b2" data-nome="Refrigerante Guaraná 2L" data-preco="11.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bebida 3 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Suco Natural">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Suco Natural 500ml</h3>
+                        <p class="ingredientes">Laranja, Limão ou Abacaxi</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 9,90</span>
+                            <button class="btn-adicionar" data-id="b3" data-nome="Suco Natural 500ml" data-preco="9.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bebida 4 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Cerveja Artesanal">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Cerveja Artesanal 600ml</h3>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 18,90</span>
+                            <button class="btn-adicionar" data-id="b4" data-nome="Cerveja Artesanal 600ml" data-preco="18.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bebida 5 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Vinho Tinto">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Vinho Tinto 375ml</h3>
+                        <p class="ingredientes">Cabernet Sauvignon ou Merlot</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 29,90</span>
+                            <button class="btn-adicionar" data-id="b5" data-nome="Vinho Tinto 375ml" data-preco="29.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bebida 6 -->
+                <div class="card-produto">
+                    <div class="produto-img">
+                        <img src="https://via.placeholder.com/300x200" alt="Água Mineral">
+                    </div>
+                    <div class="produto-info">
+                        <h3>Água Mineral 500ml</h3>
+                        <p class="ingredientes">Com ou sem gás</p>
+                        <div class="produto-footer">
+                            <span class="preco">R$ 5,90</span>
+                            <button class="btn-adicionar" data-id="b6" data-nome="Água Mineral 500ml" data-preco="5.90">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal do Carrinho -->
+    <div id="carrinho-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-shopping-cart"></i> Seu Carrinho</h2>
+                <span class="fechar-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="carrinho-itens">
+                    <!-- Itens do carrinho aparecerão aqui -->
+                    <div class="carrinho-vazio">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Seu carrinho está vazio</p>
+                        <a href="#" class="btn-dourado btn-continuar-comprando nav-link" data-target="cardapio">Ver Cardápio</a>
+                    </div>
+                </div>
+                <div class="carrinho-resumo">
+                    <div class="resumo-linha subtotal">
+                        <span>Subtotal</span>
+                        <span id="carrinho-subtotal">R$ 0,00</span>
+                    </div>
+                    <div class="resumo-linha entrega">
+                        <span>Taxa de entrega</span>
+                        <span id="carrinho-entrega">R$ 5,00</span>
+                    </div>
+                    <div class="resumo-linha total">
+                        <span>Total</span>
+                        <span id="carrinho-total">R$ 5,00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secundario btn-continuar-comprando nav-link" data-target="cardapio">Continuar Comprando</button>
+                <button class="btn-dourado btn-finalizar">Finalizar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <h2>Tratoria Rocca</h2>
+                <p>Autêntica pizza italiana desde 1995</p>
+            </div>
+            <div class="footer-info">
+                <div class="footer-coluna">
+                    <h3>Horários</h3>
+                    <p>Segunda a Sexta: 18h às 23h</p>
+                    <p>Sábados e Domingos: 18h às 00h</p>
+                </div>
+                <div class="footer-coluna">
+                    <h3>Contato</h3>
+                    <p><i class="fas fa-phone"></i> (11) 5555-5555</p>
+                    <p><i class="fas fa-envelope"></i> contato@tratoriarocca.com</p>
+                </div>
+                <div class="footer-coluna">
+                    <h3>Endereço</h3>
+                    <p>Rua das Pizzas, 123</p>
+                    <p>São Paulo - SP</p>
+                </div>
+            </div>
+            <div class="footer-social">
+                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; 2025 Tratoria Rocca. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Script para funcionalidades da página -->
+    <script src="PaginaClientePizzaria.js"></script>
+</body>
+</html>
