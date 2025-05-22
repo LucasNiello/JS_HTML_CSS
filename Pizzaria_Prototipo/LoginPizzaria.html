@@ -8,8 +8,9 @@
 </head>
 <body>
     <div id="login" class="container">
-        <h1>Bem-vindo à nossa Pizzaria</h1>
-        <h2>Faça login para acessar o cardápio</h2>
+        <h1>Tratoria Rocca</h1>
+        <h2>Benvenuti a la nostra pizzeria!</h2>
+        <h4>Faça login para acessar o cardápio</h4>
         <div class="form-group">
             <label for="usuario">Usuário</label>
             <input type="text" id="usuario" placeholder="Digite seu usuário">       
@@ -20,9 +21,20 @@
         </div>
         <button onclick="validarLogin()">Entrar</button>
         <p id="mensagem" class="mensagem hidden"></p>
+
+        <!-- Divisor entre métodos de login -->
+        <div class="login-divider">
+            <span>ou</span>
+        </div>
+        
+        <!-- Botão de Login com Google -->
+        <button id="google-login" onclick="loginComGoogle()">
+            <i class="fab fa-google"></i> Login com Google
+        </button>
     </div>
     <footer>
-        <p>© 2025 Pizzaria Delícia</p>
+
+        <p>____© La ROCCA TRATORIA____</p>
     </footer>
     <script src="LoginPizzaria.js"></script>
 </body>
