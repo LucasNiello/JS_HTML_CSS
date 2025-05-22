@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="LoginBib.css">
+</head>
+<body>
+    <div id="login" class="container">
+        <h1>Bem vindo à nossa Biblioteca</h1>
+        <h2>Faça login para continuar</h2>
+        <div class="form-group">
+            <label for="usuario">Usuário</label>
+            <input type="text" id="usuario" placeholder="Digite seu usuário">       
+        </div>
+        <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" placeholder="Digite sua senha">
+        </div>
+        <button onclick="validarLogin()">Entrar</button>
+        <p id="mensagem" class="mensagem hidden"></p>
+    </div>
+    <footer>
+        
+    </footer>
+    <script src="LoginBib.js"></script>
+</body>
+</html>
