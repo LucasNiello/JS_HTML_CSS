@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Pizzaria</title>
+    <link rel="stylesheet" href="LoginPizzaria.css">
+</head>
+<body>
+    <div id="login" class="container">
+        <h1>Bem-vindo à nossa Pizzaria</h1>
+        <h2>Faça login para acessar o cardápio</h2>
+        <div class="form-group">
+            <label for="usuario">Usuário</label>
+            <input type="text" id="usuario" placeholder="Digite seu usuário">       
+        </div>
+        <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" placeholder="Digite sua senha">
+        </div>
+        <button onclick="validarLogin()">Entrar</button>
+        <p id="mensagem" class="mensagem hidden"></p>
+    </div>
+    <footer>
+        <p>© 2025 Pizzaria Delícia</p>
+    </footer>
+    <script src="LoginPizzaria.js"></script>
+</body>
+</html>

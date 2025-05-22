@@ -1,0 +1,52 @@
+.container {
+    width: 300px;
+    margin: 100px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #fff5e6;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #d35400;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #e67e22;
+}
+
+.mensagem {
+    margin-top: 15px;
+    display: none;
+}
+
+.mensagem-sucesso {
+    color: green;
+    display: block;
+}
+
+.mensagem-erro {
+    color: red;
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
