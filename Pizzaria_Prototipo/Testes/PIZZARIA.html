@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="PIZZARIA.css">
+    <title>Pizzaria Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header com navegação fixa -->
+    <header class="admin-header">
+        <div class="header-container">
+            <div class="logo">
+                <h1>Trattoria Rocca</h1>
+                <p class="slogan">Painel Administrativo</p>
+            </div>
+            <nav>
+                <ul class="admin-menu">
+                    <li><a href="#" class="nav-link active" onclick="mostrarSecao('cadastro'); setActiveLink(this); return false;"><i class="fas fa-plus-circle"></i> Cadastrar Pizza</a></li>
+                    <li><a href="#" class="nav-link" onclick="mostrarSecao('consulta'); setActiveLink(this); return false;"><i class="fas fa-search"></i> Consultar Pizza</a></li>
+                    <!-- O link Alterar Pizza pode ser removido ou desabilitado, já que a edição é feita via modal na consulta -->
+                    <!-- <li><a href="#" class="nav-link" onclick="mostrarSecao('alterar'); setActiveLink(this); return false;"><i class="fas fa-edit"></i> Alterar Pizza</a></li> -->
+                    <li><a href="#" class="nav-link" onclick="mostrarSecao('gerenciar-ingredientes'); setActiveLink(this); return false;"><i class="fas fa-pepper-hot"></i> Ingredientes</a></li>
+                    <li><a href="#" class="nav-link" onclick="mostrarSecao('venda'); setActiveLink(this); return false;"><i class="fas fa-shopping-cart"></i> Registrar Venda</a></li>
+                    <li><a href="#" class="nav-link" onclick="mostrarSecao('relatorio'); setActiveLink(this); return false;"><i class="fas fa-flag"></i> Relatório Vendas</a></li>
+                    <!-- Adicionar link de Logout (sem funcionalidade JS ainda) -->
+                    <li><a href="LoginPizzaria.html" class="nav-link logout-link"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main class="admin-main-content">
+        <div class="container">
+            <!-- Seção de Cadastro de Pizza -->
+            <div id="cadastro" class="secao active">
+                <h2>Cadastrar Pizza</h2>
+                <div class="form-group">
+                    <label for="cadastro-nome">Nome da Pizza</label>
+                    <input type="text" id="cadastro-nome" placeholder="Digite o nome da pizza">
+                </div>
+                <div class="form-group">
+                    <label for="cadastro-ingredientes">Ingredientes</label>
+                    <input type="text" id="cadastro-ingredientes" placeholder="Digite os ingredientes da pizza">
+                </div>
+                <div class="form-group">
+                    <label for="cadastro-preco">Preço</label>
+                    <input type="number" id="cadastro-preco" placeholder="Digite o preço da pizza" step="0.01">
+                </div>
+                <button onclick="adicionarPizza()">Adicionar Pizza</button>
+            </div>
+
+            <!-- Seção de Consulta de Pizza -->
+            <div id="consulta" class="secao hidden">
+                <h2>Consultar Pizzas</h2>
+                <input type="text" id="busca-pizza" placeholder="Buscar por nome" oninput="buscarPizza()">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ingredientes</th>
+                            <th>Preço</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-pizzas">
+                        <!-- Pizzas serão exibidas aqui -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Seção de Alteração de Pizza -->
+            <div id="alterar" class="secao hidden">
+                <h2>Alterar Pizza</h2>
+                <p>Para alterar uma pizza, utilize o botão "Editar" na tabela da seção "Consultar Pizzas".</p>
+            </div>
+
+            <!-- Seção de Gerenciar Ingredientes -->
+            <div id="gerenciar-ingredientes" class="secao hidden">
+                <h2>Gerenciar Ingredientes (para "Monte Sua Pizza" do Cliente)</h2>
+                <div class="form-container add-ingredient-form">
+                    <h3>Adicionar Novo Ingrediente</h3>
+                    <div class="form-group">
+                        <label for="ingrediente-nome">Nome do Ingrediente</label>
+                        <input type="text" id="ingrediente-nome" placeholder="Ex: Mussarela de Búfala">
+                    </div>
+                    <div class="form-group">
+                        <label for="ingrediente-preco">Preço Adicional (R$)</label>
+                        <input type="number" id="ingrediente-preco" placeholder="Ex: 5.00 (0 para incluso)" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="ingrediente-tipo">Tipo</label>
+                        <select id="ingrediente-tipo">
+                            <option value="base">Base (Massa)</option>
+                            <option value="queijo">Queijo</option>
+                            <option value="carne">Carne/Embutido</option>
+                            <option value="vegetal">Vegetal/Erva</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    <button onclick="adicionarIngrediente()">Adicionar Ingrediente</button>
+                </div>
+                <div class="table-container">
+                    <h3>Ingredientes Disponíveis</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Preço Adicional</th>
+                                <th>Tipo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-ingredientes">
+                            <!-- Ingredientes serão exibidos aqui pelo JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Modal para Editar Ingrediente -->
+                <div id="modal-editar-ingrediente" class="modal hidden">
+                    <div class="modal-content">
+                        <span class="fechar-modal" onclick="fecharModalEdicaoIngrediente()">&times;</span>
+                        <h3>Editar Ingrediente</h3>
+                        <input type="hidden" id="editar-ingrediente-id">
+                        <div class="form-group">
+                            <label for="editar-ingrediente-nome">Nome do Ingrediente</label>
+                            <input type="text" id="editar-ingrediente-nome">
+                        </div>
+                        <div class="form-group">
+                            <label for="editar-ingrediente-preco">Preço Adicional (R$)</label>
+                            <input type="number" id="editar-ingrediente-preco" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="editar-ingrediente-tipo">Tipo</label>
+                            <select id="editar-ingrediente-tipo">
+                                <option value="base">Base (Massa)</option>
+                                <option value="queijo">Queijo</option>
+                                <option value="carne">Carne/Embutido</option>
+                                <option value="vegetal">Vegetal/Erva</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        <button onclick="salvarEdicaoIngrediente()">Salvar Alterações</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Venda -->
+            <div id="venda" class="secao hidden">
+                <h2>Registrar Venda</h2>
+                <div class="form-group">
+                    <label for="venda-titulo">Nome da Pizza:</label>
+                    <input type="text" id="venda-titulo" placeholder="Digite o nome da pizza vendida">
+                </div>
+                <div class="form-group">
+                    <label for="venda-preco">Preço:</label>
+                    <input type="number" id="venda-preco" placeholder="Digite o preço da venda" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="venda-comprador">Nome do Comprador:</label>
+                    <input type="text" id="venda-comprador" placeholder="Digite o nome do comprador (opcional)">
+                </div>
+                <button onclick="registrarVenda()">Registrar Venda</button>
+                <h3>Histórico de Vendas (Sessão Atual)</h3>
+                <ul id="lista-vendas">
+                    <!-- Lista de vendas será exibida aqui -->
+                </ul>
+            </div>
+
+            <!-- Seção de Relatório de Vendas -->
+            <div id="relatorio" class="secao hidden">
+                <h2>Relatório de Vendas (Sessão Atual)</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pizza</th>
+                            <th>Preço</th>
+                            <th>Comprador</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-relatorio-vendas">
+                        <!-- Relatório de vendas será exibido aqui -->
+                    </tbody>
+                </table>
+                <div id="total-vendas"></div>
+            </div>
+
+            <!-- Modal de Edição de Pizza -->
+            <div id="modal-editar-pizza" class="modal hidden">
+                <div class="modal-content">
+                    <span class="fechar-modal" onclick="fecharModalEdicaoPizza()">&times;</span>
+                    <h3>Editar Pizza</h3>
+                    <input type="hidden" id="editar-pizza-id">
+                    <div class="form-group">
+                        <label for="editar-pizza-nome">Nome da Pizza</label>
+                        <input type="text" id="editar-pizza-nome">
+                    </div>
+                    <div class="form-group">
+                        <label for="editar-pizza-ingredientes">Ingredientes</label>
+                        <input type="text" id="editar-pizza-ingredientes">
+                    </div>
+                    <div class="form-group">
+                        <label for="editar-pizza-preco">Preço</label>
+                        <input type="number" id="editar-pizza-preco" step="0.01">
+                    </div>
+                    <button onclick="salvarEdicaoPizza()">Salvar Alterações</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Script externo -->
+    <script src="PIZZARIA.js"></script>
+</body>
+</html>
