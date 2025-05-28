@@ -4,6 +4,18 @@ let cardapio = [];
 // Variável para armazenar a pizza que será alterada
 let pizzaParaAlterar = null;
 
+// Função para carregar o cardápio do localStorage quando a página iniciar
+function carregarCardapio() {
+    const cardapioSalvo = localStorage.getItem('cardapioPizzaria');
+    if (cardapioSalvo) {
+        cardapio = JSON.parse(cardapioSalvo);
+        atualizarLista(); // Atualiza a lista na interface
+    }
+}
+
+// Carregar cardápio quando a página for carregada
+document.addEventListener('DOMContentLoaded', carregarCardapio);
+
 // Função para mostrar apenas a seção clicada e esconder as outras
 function mostrarSecao(secao) {
     const secoes = ["cadastro", "consulta", "alterar", "monte-sua-pizza", "venda", "relatorio"];
@@ -19,11 +31,15 @@ function adicionarPizza() {
 
     if (nome && ingredientes && preco) {
         cardapio.push({ nome, ingredientes, preco });
+        
+        // Salvar no localStorage para compartilhar com a página do cliente
+        localStorage.setItem('cardapioPizzaria', JSON.stringify(cardapio));
+        
         document.getElementById("titulo").value = "";
         document.getElementById("ingredientes").value = "";
         document.getElementById("preco").value = "";
         atualizarLista();
-        alert("Pizza cadastrada com sucesso!");
+        alert("Pizza cadastrada com sucesso! A pizza agora está disponível para os clientes.");
     } else {
         alert("Por favor, preencha todos os campos.");
     }
@@ -62,16 +78,18 @@ function buscarPizzaParaAlterar() {
 
     if (pizzaParaAlterar) {
         document.getElementById("form-alterar").classList.remove("hidden");
-        document.getElementById("novo-titulo").value = pizzaParaAlterar.nome;
+        document.getElementById("novo-nome").value = pizzaParaAlterar.nome;
         document.getElementById("novo-ingredientes").value = pizzaParaAlterar.ingredientes;
         document.getElementById("novo-preco").value = pizzaParaAlterar.preco;
+    } else {
+        alert("Pizza não encontrada. Verifique o nome e tente novamente.");
     }
 }
 
 // Aplica as alterações feitas à pizza selecionada
 function alterarPizza() {
     if (pizzaParaAlterar) {
-        const novoNome = document.getElementById("novo-titulo").value;
+        const novoNome = document.getElementById("novo-nome").value;
         const novoIngredientes = document.getElementById("novo-ingredientes").value;
         const novoPreco = parseFloat(document.getElementById("novo-preco").value);
 
@@ -80,8 +98,11 @@ function alterarPizza() {
             pizzaParaAlterar.ingredientes = novoIngredientes;
             pizzaParaAlterar.preco = novoPreco;
 
+            // Atualizar no localStorage após alteração
+            localStorage.setItem('cardapioPizzaria', JSON.stringify(cardapio));
+            
             atualizarLista();
-            alert("Pizza alterada com sucesso!");
+            alert("Pizza alterada com sucesso! As alterações estão disponíveis para os clientes.");
             document.getElementById("form-alterar").classList.add("hidden");
         } else {
             alert("Por favor, preencha todos os campos.");
@@ -96,6 +117,23 @@ function registrarVenda() {
     const comprador = document.getElementById("venda-comprador").value;
 
     if (nomePizza && precoPizza && comprador) {
+        // Criar objeto de venda
+        const venda = {
+            pizza: nomePizza,
+            preco: precoPizza,
+            comprador: comprador,
+            data: new Date().toLocaleString()
+        };
+        
+        // Obter vendas existentes ou iniciar array vazio
+        let vendas = JSON.parse(localStorage.getItem('vendasPizzaria') || '[]');
+        
+        // Adicionar nova venda
+        vendas.push(venda);
+        
+        // Salvar no localStorage
+        localStorage.setItem('vendasPizzaria', JSON.stringify(vendas));
+        
         const listaVendas = document.getElementById("lista-vendas");
         const item = document.createElement("li");
         item.textContent = `Pizza: ${nomePizza}, Preço: R$${precoPizza.toFixed(2)}, Comprador: ${comprador}`;
@@ -104,9 +142,38 @@ function registrarVenda() {
         document.getElementById("venda-titulo").value = '';
         document.getElementById("venda-preco").value = '';
         document.getElementById("venda-comprador").value = '';
+        
+        alert("Venda registrada com sucesso!");
     } else {
         alert("Preencha todos os campos!");
     }
+}
+
+// Função para gerar relatório de vendas
+function gerarRelatorioVendas() {
+    // Mostrar a seção de relatório
+    mostrarSecao('relatorio');
+    
+    // Obter vendas do localStorage
+    const vendas = JSON.parse(localStorage.getItem('vendasPizzaria') || '[]');
+    
+    // Atualizar tabela de relatório
+    const tabelaRelatorio = document.getElementById("tabela-relatorio-vendas");
+    tabelaRelatorio.innerHTML = "";
+    
+    if (vendas.length === 0) {
+        tabelaRelatorio.innerHTML = "<tr><td colspan='3'>Nenhuma venda registrada</td></tr>";
+        return;
+    }
+    
+    vendas.forEach(venda => {
+        let linha = `<tr>
+                        <td>${venda.pizza}</td>
+                        <td>R$${venda.preco.toFixed(2)}</td>
+                        <td>${venda.comprador}</td>
+                    </tr>`;
+        tabelaRelatorio.innerHTML += linha;
+    });
 }
 
 // Seção: MONTE SUA PIZZA
@@ -130,7 +197,7 @@ function adicionarItem() {
 
 // Extrai o valor numérico do texto do item
 function extrairPreco(texto) {
-    const match = texto.match(/R\$ ?([\d,]+(?:\.\d+)?)/);
+    const match = texto.match(/R\$\s?([\d,]+(?:\.\d+)?)/);
     return match ? parseFloat(match[1].replace(',', '.')) : 0;
 }
 
