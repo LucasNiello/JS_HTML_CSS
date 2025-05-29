@@ -12,20 +12,30 @@ function exibirMensagem(texto, tipo) {
     }, 3000);    
 }
 
+// Valida o Login do usuário e redireciona para a página correta
 function validarLogin() {
     const usuario = document.getElementById("usuario").value;
     const senha = document.getElementById("senha").value;
 
-    // Usuário e senha fixos para validação
-    const usuarioCorreto = "admin";
-    const senhaCorreta = "admin";
+    // Credenciais fixas
+    const adminUsuario = "admin";
+    const adminSenha = "admin";
 
-    if (usuario === usuarioCorreto && senha === senhaCorreta) {
-        exibirMensagem("Login realizado com sucesso!", "sucesso");
+    const clienteUsuario = "cliente";
+    const clienteSenha = "cliente";
+
+    if (usuario === adminUsuario && senha === adminSenha) {
+        exibirMensagem("Login de administrador realizado com sucesso!", "sucesso");
         setTimeout(() => {
-            window.location.href = "PIZZARIA.html"; // Redireciona para a página do cardápio
+            window.location.href = "PIZZARIA_admin.html"; // Página do administrador
+        }, 2000);
+    } else if (usuario === clienteUsuario && senha === clienteSenha) {
+        exibirMensagem("Login de cliente realizado com sucesso!", "sucesso");
+        setTimeout(() => {
+            window.location.href = "PIZZARIA_cliente.html"; // Página do cliente
         }, 2000);
     } else {
         exibirMensagem("Usuário ou senha incorretos!", "erro");
     }
 }
+
