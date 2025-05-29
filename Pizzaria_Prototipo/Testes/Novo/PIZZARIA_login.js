@@ -39,18 +39,3 @@ function validarLogin() {
     }
 }
 
-
-
-// Simula o login com Google usando um e-mail fictício
-function loginComGoogle() {
-    const emailFicticio = "usuarioficticio@google.com";
-    
-    // Exibe mensagem de sucesso simulado
-    exibirMensagem(`Login com Google simulado com sucesso para ${emailFicticio}! Redirecionando...`, "sucesso");
-    
-    // Redireciona para a página do cliente após um pequeno atraso
-    setTimeout(() => {
-        window.location.href = "PIZZARIA_cliente.html"; // Página do cliente
-    }, 2500); // Atraso um pouco maior para dar tempo de ler a mensagem
-}
-

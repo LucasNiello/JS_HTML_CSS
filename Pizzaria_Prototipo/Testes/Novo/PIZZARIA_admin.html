@@ -63,7 +63,6 @@
                         <th>Nome</th>
                         <th>Ingredientes</th>
                         <th>Preço</th>
-                        <th>Ações</th> <!-- Nova coluna para ações -->
                     </tr>
                 </thead>
                 <tbody id="lista-pizzas">
@@ -94,75 +93,41 @@
             </div>
         </div>
 
-<!-- Seção Monte Sua Pizza - Gerenciamento de Opções -->
+        <!-- Seção Monte Sua Pizza -->
         <div id="monte-sua-pizza" class="hidden">
-            <h2>Gerenciar Opções "Monte Sua Pizza"</h2>
+            <h2>Monte Sua Pizza</h2>
 
-            <!-- Gerenciamento de Tamanhos/Massas Base -->
-            <div class="gerenciamento-grupo">
-                <h3>Tamanhos/Massas Base</h3>
-                <table id="tabela-tamanhos">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Preço Base (R$)</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-tamanhos">
-                        <!-- Itens serão carregados aqui via JS -->
-                    </tbody>
-                </table>
-                <div class="form-inline">
-                    <input type="text" id="tamanho-nome" placeholder="Nome (Ex: Média Tradicional)">
-                    <input type="number" id="tamanho-preco" placeholder="Preço Base">
-                    <button onclick="adicionarOpcaoMontagem(\'tamanhos\')">Adicionar Tamanho/Massa</button>
-                </div>
+            <!-- Lista combinada de massas e ingredientes -->
+            <label for="seletor-itens">Escolha a base e os ingredientes</label>
+            <select id="seletor-itens" multiple>
+                <!-- Bases -->
+                <option>Massa Fina (R$5)</option>
+                <option>Massa Grossa (R$6)</option>
+                <option>Massa Recheada (R$7)</option>
+
+                <!-- Ingredientes -->
+                <option>Queijo (R$2)</option>
+                <option>Presunto (R$2,50)</option>
+                <option>Tomate (R$1,50)</option>
+                <option>Bacon (R$3)</option>
+                <option>Calabresa (R$3)</option>
+            </select>
+
+            <!-- Botão para adicionar ao cálculo -->
+            <button onclick="adicionarItem()">Adicionar</button>
+
+            <!-- Campo de preço total -->
+            <div>
+                <label for="precoTotal">Preço Total (R$)</label>
+                <input type="text" id="precoTotal" readonly>
             </div>
 
-            <!-- Gerenciamento de Ingredientes Adicionais -->
-            <div class="gerenciamento-grupo">
-                <h3>Ingredientes Adicionais</h3>
-                 <p><i>Nota: O sistema considera os 5 primeiros ingredientes selecionados pelo cliente como gratuitos. Os preços abaixo são aplicados aos ingredientes extras. Ingredientes premium podem ter um custo adicional fixo.</i></p>
-                <table id="tabela-ingredientes">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Preço Extra (R$)</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-ingredientes-admin">
-                        <!-- Itens serão carregados aqui via JS -->
-                    </tbody>
-                </table>
-                <div class="form-inline">
-                    <input type="text" id="ingrediente-nome" placeholder="Nome do Ingrediente">
-                    <input type="number" id="ingrediente-preco" placeholder="Preço (se extra)">
-                    <button onclick="adicionarOpcaoMontagem(\'ingredientes\')">Adicionar Ingrediente</button>
-                </div>
-            </div>
-
-            <!-- Gerenciamento de Bordas Recheadas -->
-            <div class="gerenciamento-grupo">
-                <h3>Bordas Recheadas</h3>
-                <table id="tabela-bordas">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Preço (R$)</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-bordas-admin">
-                        <!-- Itens serão carregados aqui via JS -->
-                    </tbody>
-                </table>
-                <div class="form-inline">
-                    <input type="text" id="borda-nome" placeholder="Nome (Ex: Catupiry Original)">
-                    <input type="number" id="borda-preco" placeholder="Preço">
-                    <button onclick="adicionarOpcaoMontagem(\'bordas\')">Adicionar Borda</button>
-                </div>
+            <!-- Relatório de itens adicionados -->
+            <div>
+                <h3>Itens adicionados:</h3>
+                <ul id="lista-itens">
+                    <!-- Itens aparecerão aqui -->
+                </ul>
             </div>
         </div>
 
