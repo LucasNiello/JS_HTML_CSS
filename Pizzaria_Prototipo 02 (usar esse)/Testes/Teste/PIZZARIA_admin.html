@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="PIZZARIA_admin.css">
+    <link rel="stylesheet" href="popup_styles.css"> <!-- Incluindo estilos do popup global -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Pizzaria - Administração</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Tratoria Rocca</h1>
+
+        <!-- Menu principal -->
+        <div class="menu">
+        <button onclick="mostrarSecao('cadastro')">
+            <i class="fas fa-plus-circle"></i> Cadastrar Pizza
+        </button>
+        <button onclick="mostrarSecao('consulta')">
+            <i class="fas fa-search"></i> Consultar Pizza
+        </button>
+        <button onclick="mostrarSecao('alterar')">
+            <i class="fas fa-edit"></i> Alterar Pizza
+        </button>
+        <button onclick="mostrarSecao('monte-sua-pizza')">
+            <i class="fas fa-pizza-slice"></i> Monte Sua Pizza
+        </button>
+        <button onclick="mostrarSecao('venda')">
+            <i class="fas fa-shopping-cart"></i> Venda de Pizzas
+        </button>
+        <button onclick="gerarRelatorioVendas()">
+            <i class="fas fa-flag"></i> Relatório de Vendas
+        </button>
+    </div>
+
+
+        <!-- Seção de Cadastro -->
+        <div id="cadastro" class="hidden">
+            <h2>Cadastrar Pizza</h2>
+            <div class="form-group">
+                <label for="titulo">Nome da Pizza</label>
+                <input type="text" id="titulo" placeholder="Digite o nome da pizza">
+            </div>
+            <div class="form-group">
+                <label for="ingredientes">Ingredientes</label>
+                <input type="text" id="ingredientes" placeholder="Digite os ingredientes da pizza">
+            </div>
+            <div class="form-group">
+                <label for="preco">Preço</label>
+                <input type="number" id="preco" placeholder="Digite o preço da pizza">
+            </div>
+            <button onclick="adicionarPizza()">Adicionar Pizza</button>
+        </div>
+
+        <!-- Seção de Consulta -->
+        <div id="consulta" class="hidden">
+            <h2>Consultar Pizzas</h2>
+            <input type="text" id="busca" placeholder="Buscar por nome" oninput="buscarPizza()">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Ingredientes</th>
+                        <th>Preço</th>
+                        <th>Ações</th> <!-- Nova coluna para ações -->
+                    </tr>
+                </thead>
+                <tbody id="lista-pizzas">
+                    <!-- Pizzas serão exibidas aqui -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Seção de Alteração -->
+        <div id="alterar" class="hidden">
+            <h2>Alterar Pizza</h2>
+            <input type="text" id="busca-alterar" placeholder="Buscar pizza para alterar" oninput="buscarPizzaParaAlterar()">
+
+            <div id="form-alterar" class="hidden">
+                <div class="form-group">
+                    <label for="novo-nome">Novo Nome</label>
+                    <input type="text" id="novo-nome">
+                </div>
+                <div class="form-group">
+                    <label for="novo-ingredientes">Novos Ingredientes</label>
+                    <input type="text" id="novo-ingredientes">
+                </div>
+                <div class="form-group">
+                    <label for="novo-preco">Novo Preço</label>
+                    <input type="number" id="novo-preco">
+                </div>
+                <button onclick="alterarPizza()">Salvar Alterações</button>
+            </div>
+        </div>
+
+        <!-- Seção Monte Sua Pizza - Redesenhada com estilo do cliente -->
+        <div id="monte-sua-pizza" class="hidden">
+            <div class="secao-header">
+                <h2>Gerenciar Opções "Monte Sua Pizza"</h2>
+                <p>Configure as opções disponíveis para os clientes montarem suas pizzas personalizadas</p>
+            </div>
+
+            <div class="montar-pizza-container">
+                <!-- Coluna de Opções -->
+                <div class="opcoes-pizza">
+                    <!-- Tamanhos/Massas -->
+                    <div class="opcao-grupo">
+                        <h3><i class="fas fa-ruler"></i> Tamanhos/Massas Base</h3>
+                        <p class="subtitulo">Defina os tamanhos e tipos de massa disponíveis para os clientes</p>
+                        
+                        <div class="opcoes-lista-admin">
+                            <table class="tabela-opcoes">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Preço Base (R$)</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-tamanhos">
+                                    <!-- Itens serão carregados aqui via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="form-adicionar">
+                            <h4>Adicionar Novo Tamanho/Massa</h4>
+                            <div class="form-inline">
+                                <div class="input-grupo">
+                                    <label for="tamanho-nome">Nome</label>
+                                    <input type="text" id="tamanho-nome" placeholder="Ex: Média Tradicional">
+                                </div>
+                                <div class="input-grupo">
+                                    <label for="tamanho-preco">Preço (R$)</label>
+                                    <input type="number" id="tamanho-preco" placeholder="0.00" step="0.01" min="0">
+                                </div>
+                                <button class="btn-adicionar-opcao" onclick="adicionarOpcaoMontagem('tamanhos')">
+                                    <i class="fas fa-plus"></i> Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ingredientes Adicionais -->
+                    <div class="opcao-grupo">
+                        <h3><i class="fas fa-pepper-hot"></i> Ingredientes Adicionais</h3>
+                        <p class="subtitulo">Os 5 primeiros ingredientes selecionados pelo cliente são gratuitos. Configure os preços para ingredientes extras.</p>
+                        
+                        <div class="opcoes-lista-admin">
+                            <table class="tabela-opcoes">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Preço Extra (R$)</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-ingredientes-admin">
+                                    <!-- Itens serão carregados aqui via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="form-adicionar">
+                            <h4>Adicionar Novo Ingrediente</h4>
+                            <div class="form-inline">
+                                <div class="input-grupo">
+                                    <label for="ingrediente-nome">Nome</label>
+                                    <input type="text" id="ingrediente-nome" placeholder="Ex: Calabresa Fatiada">
+                                </div>
+                                <div class="input-grupo">
+                                    <label for="ingrediente-preco">Preço Extra (R$)</label>
+                                    <input type="number" id="ingrediente-preco" placeholder="0.00" step="0.01" min="0">
+                                </div>
+                                <button class="btn-adicionar-opcao" onclick="adicionarOpcaoMontagem('ingredientes')">
+                                    <i class="fas fa-plus"></i> Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bordas Recheadas -->
+                    <div class="opcao-grupo">
+                        <h3><i class="fas fa-circle-notch"></i> Bordas Recheadas</h3>
+                        <p class="subtitulo">Configure as opções de bordas recheadas disponíveis para os clientes</p>
+                        
+                        <div class="opcoes-lista-admin">
+                            <table class="tabela-opcoes">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Preço (R$)</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lista-bordas-admin">
+                                    <!-- Itens serão carregados aqui via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="form-adicionar">
+                            <h4>Adicionar Nova Borda</h4>
+                            <div class="form-inline">
+                                <div class="input-grupo">
+                                    <label for="borda-nome">Nome</label>
+                                    <input type="text" id="borda-nome" placeholder="Ex: Catupiry Original">
+                                </div>
+                                <div class="input-grupo">
+                                    <label for="borda-preco">Preço (R$)</label>
+                                    <input type="number" id="borda-preco" placeholder="0.00" step="0.01" min="0">
+                                </div>
+                                <button class="btn-adicionar-opcao" onclick="adicionarOpcaoMontagem('bordas')">
+                                    <i class="fas fa-plus"></i> Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coluna de Resumo e Visualização -->
+                <div class="resumo-pizza">
+                    <h3>Visualização para o Cliente</h3>
+                    <div class="preview-container">
+                        <div class="preview-header">
+                            <i class="fas fa-eye"></i> Prévia da Seção "Monte Sua Pizza"
+                        </div>
+                        <div class="preview-content">
+                            <div class="preview-item">
+                                <h4>Tamanhos/Massas</h4>
+                                <div id="preview-tamanhos" class="preview-opcoes">
+                                    <!-- Será preenchido via JavaScript -->
+                                    <p class="preview-placeholder">Os tamanhos cadastrados aparecerão aqui...</p>
+                                </div>
+                            </div>
+                            
+                            <div class="preview-item">
+                                <h4>Ingredientes</h4>
+                                <div id="preview-ingredientes" class="preview-opcoes">
+                                    <!-- Será preenchido via JavaScript -->
+                                    <p class="preview-placeholder">Os ingredientes cadastrados aparecerão aqui...</p>
+                                </div>
+                            </div>
+                            
+                            <div class="preview-item">
+                                <h4>Bordas</h4>
+                                <div id="preview-bordas" class="preview-opcoes">
+                                    <!-- Será preenchido via JavaScript -->
+                                    <p class="preview-placeholder">As bordas cadastradas aparecerão aqui...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dicas-container">
+                        <h4><i class="fas fa-lightbulb"></i> Dicas</h4>
+                        <ul class="dicas-lista">
+                            <li>Mantenha pelo menos um tamanho de pizza disponível</li>
+                            <li>A opção "Sem Borda Recheada" não pode ser excluída</li>
+                            <li>Recomendamos oferecer pelo menos 5 ingredientes básicos</li>
+                            <li>Todas as alterações são salvas automaticamente</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Venda -->
+        <div id="venda" class="hidden">
+            <h2>Venda de Pizzas</h2>
+            <div class="form-group">
+                <label for="venda-titulo">Nome da Pizza:</label>
+                <input type="text" id="venda-titulo" placeholder="Digite o nome da pizza">
+            </div>
+            <div class="form-group">
+                <label for="venda-preco">Preço:</label>
+                <input type="number" id="venda-preco" placeholder="Digite o preço da pizza">
+            </div>
+            <div class="form-group">
+                <label for="venda-comprador">Nome do Comprador:</label>
+                <input type="text" id="venda-comprador" placeholder="Digite o nome do comprador">
+            </div>
+            <button onclick="registrarVenda()">Registrar Venda</button>
+            <h3>Pizzas Vendidas</h3>
+            <ul id="lista-vendas">
+                <!-- Lista de vendas será exibida aqui -->
+            </ul>
+        </div>
+
+        <!-- Seção de Relatório de Vendas -->
+        <div id="relatorio" class="hidden">
+            <h2>Relatório de Vendas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Preço</th>
+                        <th>Comprador</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-relatorio-vendas">
+                    <!-- Relatório de vendas será exibido aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Script externo - Usando a nova versão com localStorage -->
+    <script src="popup_function.js"></script> <!-- Incluindo script do popup global -->
+    <script src="PIZZARIA_admin.js"></script>
+</body>
+</html>

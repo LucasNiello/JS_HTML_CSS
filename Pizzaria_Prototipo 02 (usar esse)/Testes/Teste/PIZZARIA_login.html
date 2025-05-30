@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Pizzaria</title>
+    <link rel="stylesheet" href="PIZZARIA_login.css">
+    <link rel="stylesheet" href="popup_styles.css"> <!-- Incluindo estilos do popup global -->
+    
+    <!-- Adicionando Font Awesome para o ícone do Google -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div id="login" class="container">
+        <h1>Tratoria Rocca</h1>
+        <h2>Benvenuti a la nostra pizzeria!</h2>
+        <h4>Faça login para acessar o cardápio</h4>
+        <div class="form-group">
+            <label for="usuario">Usuário</label>
+            <input type="text" id="usuario" placeholder="Digite seu usuário">       
+        </div>
+        <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" placeholder="Digite sua senha">
+        </div>
+        <button onclick="validarLogin()">Entrar</button>
+        
+        <!-- Divisor entre métodos de login -->
+        <div class="login-divider">
+            <span>ou</span>
+        </div>
+        
+        <!-- Botão de Login com Google com ícone G estilizado -->
+        <button id="google-login" onclick="loginComGoogle()">
+            <span class="google-icon">G</span> Entrar com Google
+        </button>
+        
+    </div>
+    <footer>
+        <p>____© La ROCCA TRATORIA____</p>
+    </footer>
+    <script src="popup_function.js"></script> <!-- Incluindo script do popup global -->
+    <script src="PIZZARIA_login.js"></script>
+</body>
+</html>
