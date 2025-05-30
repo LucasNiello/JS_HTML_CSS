@@ -62,8 +62,17 @@ function adicionarPizza() {
 // Atualiza a lista de pizzas exibida na seção de consulta, incluindo botão de exclusão
 function atualizarLista(listaFiltrada = cardapio) {
     let lista = document.getElementById("lista-pizzas");
-    if (!lista) return; // Sai se o elemento não existir
+    if (!lista) return; // Sai se o elemento não existir 
     lista.innerHTML = ""; // Limpa a lista atual
+
+    // O ! (ponto de exclamação) em JavaScript é o operador lógico de negação (NOT). Ele inverte o valor de verdade de uma expressão.
+//     significa:
+
+// Se lista for "falsy", ou seja, se for false, null, undefined, 0, NaN, ou '' (string vazia), então o código dentro do if será executado. Nesse caso, return; é chamado, encerrando a função imediatamente.
+
+// Resumindo:
+// ✅ !lista é true → lista está vazio, indefinido ou nulo → a função retorna.
+// ❌ !lista é false → lista tem algum valor → a função continua.
 
     listaFiltrada.forEach((pizza, index) => {
         // Encontra o índice original no array 'cardapio' para garantir a exclusão correta
@@ -310,7 +319,7 @@ function excluirOpcaoMontagem(tipo, index) {
     }
 }
 
-// --- Funções de Venda e Relatório (Mantidas como estavam) ---
+// --- Funções de Venda e Relatório  ---
 
 // Função para registrar uma venda e exibir na lista
 function registrarVenda() {
