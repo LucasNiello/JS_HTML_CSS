@@ -1,0 +1,335 @@
+/* LoginPizzaria.css - Estilo elegante com paleta preto e dourado */
+
+/* Importação de fontes */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&family=Roboto:wght@500&display=swap');
+
+/* Variáveis de cores */
+:root {
+    --preto: #0a0a0a;
+    --preto-secundario: #1a1a1a;
+    --dourado-principal: #d4af37;
+    --dourado-claro: #f8e9a1;
+    --dourado-escuro: #a17e1a;
+    --branco-suave: #f5f5f5;
+    --cinza-claro: #e0e0e0;
+    --cinza-escuro: #333333;
+    --google-azul: #4285F4;
+    --google-vermelho: #DB4437;
+    --google-amarelo: #F4B400;
+    --google-verde: #0F9D58;
+    --sombra-padrao: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --sombra-dourada: 0 4px 12px rgba(212, 175, 55, 0.25);
+    --transicao: all 0.3s ease;
+}
+
+/* Reset e estilos gerais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--preto);
+    color: var(--branco-suave);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 20%);
+    padding: 20px;
+    position: relative;
+}
+
+.container {
+    max-width: 450px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: var(--preto-secundario);
+    border-radius: 8px;
+    box-shadow: var(--sombra-padrao);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--dourado-escuro), var(--dourado-principal), var(--dourado-escuro));
+}
+
+/* Tipografia */
+h1, h2, h4 {
+    font-family: 'Playfair Display', serif;
+    color: var(--dourado-principal);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+h1 {
+    font-size: 2.8rem;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--dourado-principal), transparent);
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--dourado-claro);
+    margin-bottom: 10px;
+}
+
+h4 {
+    font-size: 1.1rem;
+    color: var(--branco-suave);
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+
+/* Formulários */
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--dourado-claro);
+    font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 14px 15px;
+    border: 1px solid var(--cinza-escuro);
+    border-radius: 4px;
+    background-color: rgba(10, 10, 10, 0.8);
+    color: var(--branco-suave);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    transition: var(--transicao);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: var(--dourado-principal);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+button {
+    background-color: var(--dourado-principal);
+    color: var(--preto);
+    border: none;
+    padding: 14px 40px;
+    border-radius: 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transicao);
+    margin-top: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: var(--sombra-dourada);
+    width: 100%;
+}
+
+button:hover {
+    background-color: var(--dourado-escuro);
+    transform: translateY(-2px);
+}
+
+/* Divisor entre métodos de login */
+.login-divider {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+    color: var(--cinza-claro);
+    font-size: 0.9rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: rgba(212, 175, 55, 0.2);
+}
+
+.login-divider span {
+    padding: 0 15px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+/* Botão de Login com Google */
+#google-login {
+    background-color: var(--preto);
+    color: var(--branco-suave);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 0;
+    position: relative;
+}
+
+/* Ícone G estilizado */
+.google-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #fff;
+    color: var(--preto);
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    position: relative;
+    margin-right: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Efeito multicolorido do Google */
+.google-icon::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+        var(--google-azul) 0deg 90deg,
+        var(--google-vermelho) 90deg 180deg,
+        var(--google-amarelo) 180deg 270deg,
+        var(--google-verde) 270deg 360deg
+    );
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#google-login:hover .google-icon::before {
+    opacity: 1;
+}
+
+#google-login:hover {
+    background-color: rgba(10, 10, 10, 0.9);
+    border-color: var(--dourado-principal);
+}
+
+/* Mensagem de erro/sucesso */
+.mensagem {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.mensagem.erro {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+.mensagem.sucesso {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+/* Footer */
+footer {
+    margin-top: 40px;
+    text-align: center;
+    color: var(--dourado-principal);
+    font-size: 0.9rem;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 1px;
+}
+
+/* Classes de utilidade */
+.hidden {
+    display: none;
+}
+
+/* Animações e efeitos */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+}
+
+button:focus {
+    animation: pulse 1.5s infinite;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 30px 20px;
+        max-width: 90%;
+    }
+    
+    h1 {
+        font-size: 2.2rem;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--preto);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--dourado-escuro);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--dourado-principal);
+}

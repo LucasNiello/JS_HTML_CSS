@@ -1,39 +1,9 @@
-// cliente_updated.js - Funcionalidades para a página do cliente com integração localStorage
-
-// --- Função para Exibir Pop-up de Mensagem (Adicionada aqui) ---
-
-/**
- * Exibe uma mensagem pop-up temporária na tela.
- * @param {string} mensagem - O texto a ser exibido.
- * @param {string} [tipo="info"] - O tipo de mensagem ("success", "error", "info") para estilização.
- * @param {number} [duracao=2000] - Duração em milissegundos que o pop-up ficará visível.
- */
-function showPopup(mensagem, tipo = "info", duracao = 2000) {
-    const popupExistente = document.getElementById("popup-global");
-    if (popupExistente) {
-        popupExistente.remove();
-    }
-    const popup = document.createElement("div");
-    popup.id = "popup-global";
-    popup.className = `popup-mensagem ${tipo}`;
-    popup.textContent = mensagem;
-    document.body.appendChild(popup);
-    setTimeout(() => { popup.classList.add("show"); }, 10);
-    setTimeout(() => {
-        popup.classList.remove("show");
-        setTimeout(() => { if (popup.parentNode) { popup.remove(); } }, 500);
-    }, duracao);
-}
-
-// --- Variáveis Globais ---
 let carrinho = [];
 let opcoesMontagem = {
     tamanhos: [],
     ingredientes: [],
     bordas: []
 };
-
-// --- Funções de Inicialização e Carregamento ---
 
 document.addEventListener("DOMContentLoaded", function () {
     carregarCardapioCliente();
@@ -44,109 +14,117 @@ document.addEventListener("DOMContentLoaded", function () {
     configurarFiltrosCardapio();
     configurarEventosMontagem();
     atualizarResumoMontagem();
-    configurarFinalizarPedido(); // Adicionado para configurar o botão de finalizar
 });
 
-// Carrega o cardápio principal (pizzas prontas) do localStorage
 function carregarCardapioCliente() {
     const cardapioSalvo = localStorage.getItem("cardapioPizzaria");
-    const gridProdutos = document.querySelector(".grid-produtos");
-    if (!gridProdutos) return;
-
-    gridProdutos.innerHTML = ""; // Limpa o grid antes de carregar
-
     if (cardapioSalvo) {
         const pizzas = JSON.parse(cardapioSalvo);
-        if (pizzas.length > 0) {
-             adicionarFiltroAdmin();
-             pizzas.forEach((pizza, index) => {
-                const cardHTML = criarCardPizzaAdmin(pizza, index);
-                gridProdutos.insertAdjacentHTML("beforeend", cardHTML);
+        const gridProdutos = document.querySelector(".grid-produtos");
+        const promocoesContainer = document.querySelector(".promocoes-container");
+        const docesContainer = document.querySelector("#pizzas-doces .grid-produtos");
+        if (!gridProdutos || !promocoesContainer || !docesContainer) return;
+
+        // Limpa os containers
+        gridProdutos.innerHTML = "";
+        promocoesContainer.innerHTML = "";
+        if (docesContainer) docesContainer.innerHTML = "";
+
+        // Adiciona filtros dinâmicos com base nas categorias disponíveis
+        const categorias = [...new Set(pizzas.map(p => p.categoria))];
+        const filtroCategorias = document.querySelector(".filtro-categorias");
+        if (filtroCategorias) {
+            filtroCategorias.innerHTML = `<button class="filtro-btn active" data-categoria="todas">Todas</button>`;
+            categorias.forEach(categoria => {
+                const botao = document.createElement("button");
+                botao.className = "filtro-btn";
+                botao.setAttribute("data-categoria", categoria);
+                botao.textContent = categoria;
+                filtroCategorias.appendChild(botao);
             });
-        } else {
-             gridProdutos.innerHTML = "<p>Nenhuma pizza cadastrada no momento.</p>";
         }
-    } else {
-        gridProdutos.innerHTML = "<p>Nenhuma pizza cadastrada no momento.</p>";
-    }
-    ativarBotoesAdicionar(); // Ativa botões mesmo se o cardápio estiver vazio inicialmente
-}
 
-// Adiciona o botão de filtro "Do Administrador" se houver pizzas do admin
-function adicionarFiltroAdmin() {
-    const filtroCategorias = document.querySelector(".filtro-categorias");
-    // Verifica se o botão já existe para não duplicar
-    if (filtroCategorias && !filtroCategorias.querySelector("button[data-categoria=\"admin\"]")) {
-        const categoriaBotao = document.createElement("button");
-        categoriaBotao.className = "filtro-btn";
-        categoriaBotao.setAttribute("data-categoria", "admin");
-        categoriaBotao.textContent = "Do Administrador";
-        // Insere antes do último botão (se houver) ou no final
-        const ultimoBotao = filtroCategorias.lastElementChild;
-        if (ultimoBotao) {
-             filtroCategorias.insertBefore(categoriaBotao, ultimoBotao);
-        } else {
-             filtroCategorias.appendChild(categoriaBotao);
-        }
+        pizzas.forEach((pizza, index) => {
+            const uniqueId = `${pizza.categoria.toLowerCase().replace(/\s+/g, '-')}-${pizza.nome.replace(/\s+/g, '-')}-${pizza.preco}-${index}`;
+            const cardHTML = criarCardPizza(pizza, uniqueId);
+            if (pizza.categoria === "Promoções") {
+                promocoesContainer.insertAdjacentHTML("beforeend", cardHTML);
+            } else if (pizza.categoria === "Doces") {
+                if (docesContainer) {
+                    docesContainer.insertAdjacentHTML("beforeend", cardHTML);
+                }
+            } else {
+                gridProdutos.insertAdjacentHTML("beforeend", cardHTML);
+            }
+        });
+        ativarBotoesAdicionar();
     }
 }
 
-// Cria o HTML para um card de pizza vindo do admin
-function criarCardPizzaAdmin(pizza, index) {
-    const uniqueId = `admin-${pizza.nome.replace(/\s+/g, "-")}-${pizza.preco}-${index}`;
-    // Usa uma imagem de placeholder mais específica ou permite upload futuro
-    const imageUrl = `https://via.placeholder.com/300x200/D32F2F/FFFFFF?text=${encodeURIComponent(pizza.nome)}`;
+function criarCardPizza(pizza, uniqueId) {
+    const isPromocao = pizza.categoria === "Promoções";
+    const cardClass = isPromocao ? "card-promocao" : "card-produto";
+    const imgClass = isPromocao ? "promocao-img" : "produto-img";
+    const infoClass = isPromocao ? "promocao-info" : "produto-info";
+    const btnClass = isPromocao ? "btn-promocao" : "btn-adicionar";
+    const tagClass = isPromocao ? "promocao-tag" : "tag-destaque";
+    const precoHTML = isPromocao
+        ? `<div class="promocao-preco">
+               <span class="preco-original">R$ ${(pizza.preco * 1.3).toFixed(2)}</span>
+               <span class="preco-promocional">R$ ${pizza.preco.toFixed(2)}</span>
+           </div>`
+        : `<div class="produto-footer">
+               <span class="preco">R$ ${pizza.preco.toFixed(2)}</span>
+               <button class="${btnClass}" data-id="${uniqueId}" data-nome="${pizza.nome}" data-preco="${pizza.preco}">
+                   <i class="fas fa-plus"></i> Adicionar
+               </button>
+           </div>`;
+
     return `
-        <div class="card-produto" data-categoria="admin">
-            <div class="produto-img">
-                <img src="${imageUrl}" alt="${pizza.nome}">
-                <span class="tag-destaque">Cardápio</span>
+        <div class="${cardClass}" data-categoria="${pizza.categoria}">
+            <div class="${imgClass}">
+                <img src="https://via.placeholder.com/300x200?text=${encodeURIComponent(pizza.nome)}" alt="${pizza.nome}">
+                <span class="${tagClass}">${pizza.categoria}</span>
             </div>
-            <div class="produto-info">
+            <div class="${infoClass}">
                 <h3>${pizza.nome}</h3>
                 <p class="ingredientes">${pizza.ingredientes}</p>
-                <div class="produto-footer">
-                    <span class="preco">R$ ${pizza.preco.toFixed(2)}</span>
-                    <button class="btn-adicionar" data-id="${uniqueId}" data-nome="${pizza.nome}" data-preco="${pizza.preco}">
-                        <i class="fas fa-plus"></i> Adicionar
-                    </button>
-                </div>
+                ${precoHTML}
             </div>
         </div>
     `;
 }
 
-// Carrega as opções de montagem (tamanhos, ingredientes, bordas) do localStorage
 function carregarOpcoesMontagemCliente() {
     const opcoesSalvas = localStorage.getItem("opcoesMontagemPizzaria");
     if (opcoesSalvas) {
         opcoesMontagem = JSON.parse(opcoesSalvas);
     } else {
-        console.warn("Opções de montagem não encontradas. Usando valores padrão mínimos.");
+        console.warn("Opções de montagem não encontradas no localStorage. Usando valores padrão.");
         opcoesMontagem = {
             tamanhos: [{ nome: "Média - Massa Tradicional", preco: 40.00 }],
-            ingredientes: [{ nome: "Queijo Mussarela", preco: 0.00 }, { nome: "Molho de Tomate", preco: 0.00 }],
+            ingredientes: [
+                { nome: "Queijo Mussarela", preco: 0.00 },
+                { nome: "Molho de Tomate", preco: 0.00 }
+            ],
             bordas: [{ nome: "Sem Borda Recheada", preco: 0.00 }],
         };
     }
 }
 
-// Popula a seção "Monte Sua Pizza" com as opções carregadas
 function popularOpcoesMontagemCliente() {
     const secaoMontagem = document.getElementById("montar-pizza");
     if (!secaoMontagem) return;
 
-    const containerTamanhos = secaoMontagem.querySelector(".opcao-grupo:nth-child(1) .opcoes-lista");
-    const containerIngredientes = secaoMontagem.querySelector(".ingredientes-grid");
-    const containerBordas = secaoMontagem.querySelector(".opcao-grupo:nth-child(3) .opcoes-lista");
+    const containerTamanhos = secaoMontagem.querySelector(".opcao-grupo:nth-child(1) .opcao-lista");
+    const containerIngredientes = secaoMontagem.querySelector(".ingredientes-lista");
+    const containerBordas = secaoMontagem.querySelector(".opcao-grupo:nth-child(3) .opcao-lista");
 
-    // Limpa containers
     if (containerTamanhos) containerTamanhos.innerHTML = "";
     if (containerIngredientes) containerIngredientes.innerHTML = "";
     if (containerBordas) containerBordas.innerHTML = "";
 
-    // Popula Tamanhos/Massas (Radio)
-    if (containerTamanhos && opcoesMontagem.tamanhos && opcoesMontagem.tamanhos.length > 0) {
+    if (containerTamanhos && opcoesMontagem.tamanhos.length > 0) {
         opcoesMontagem.tamanhos.forEach((item, index) => {
             const id = `tamanho-${index}`;
             const checked = index === 0 ? "checked" : "";
@@ -162,17 +140,17 @@ function popularOpcoesMontagemCliente() {
         containerTamanhos.innerHTML = "<p>Nenhuma opção de tamanho cadastrada.</p>";
     }
 
-    // Popula Ingredientes (Checkbox)
-    if (containerIngredientes && opcoesMontagem.ingredientes && opcoesMontagem.ingredientes.length > 0) {
+    if (containerIngredientes && opcoesMontagem.ingredientes.length > 0) {
         opcoesMontagem.ingredientes.forEach((item, index) => {
-            // Não exibe ingredientes com preço 0 (considerados base)
             if (item.preco > 0) {
                 const id = `ingrediente-${index}`;
+                const precoIngredientePadrao = 6.00;
+                const precoLabel = item.preco > precoIngredientePadrao ? ` (+R$ ${(item.preco - precoIngredientePadrao).toFixed(2)})` : "";
                 const div = document.createElement("div");
                 div.className = "opcao-item";
                 div.innerHTML = `
                     <input type="checkbox" id="${id}" name="ingredientes" value="${item.nome}" data-preco="${item.preco}">
-                    <label for="${id}">${item.nome} (+ R$ ${item.preco.toFixed(2)})</label>
+                    <label for="${id}">${item.nome}${precoLabel}</label>
                 `;
                 containerIngredientes.appendChild(div);
             }
@@ -181,12 +159,11 @@ function popularOpcoesMontagemCliente() {
         containerIngredientes.innerHTML = "<p>Nenhum ingrediente adicional cadastrado.</p>";
     }
 
-    // Popula Bordas (Radio)
-    if (containerBordas && opcoesMontagem.bordas && opcoesMontagem.bordas.length > 0) {
+    if (containerBordas && opcoesMontagem.bordas.length > 0) {
         opcoesMontagem.bordas.forEach((item, index) => {
             const id = `borda-${index}`;
             const checked = item.preco === 0 ? "checked" : "";
-            const precoLabel = item.preco > 0 ? ` (+ R$ ${item.preco.toFixed(2)})` : "";
+            const precoLabel = item.preco > 0 ? ` (R$ ${item.preco.toFixed(2)})` : "";
             const div = document.createElement("div");
             div.className = "opcao-item";
             div.innerHTML = `
@@ -199,8 +176,6 @@ function popularOpcoesMontagemCliente() {
         containerBordas.innerHTML = "<p>Nenhuma opção de borda cadastrada.</p>";
     }
 }
-
-// --- Configuração de Eventos ---
 
 function configurarNavegacao() {
     const navLinks = document.querySelectorAll(".nav-link");
@@ -220,19 +195,13 @@ function configurarNavegacao() {
             const targetSecao = document.getElementById(targetId);
             if (targetSecao) {
                 targetSecao.classList.add("active");
-                // Recarrega opções de montagem se a seção for ativada
-                if (targetId === "montar-pizza") {
+                if (targetId === 'montar-pizza') {
                     carregarOpcoesMontagemCliente();
                     popularOpcoesMontagemCliente();
                     configurarEventosMontagem();
                     atualizarResumoMontagem();
                 }
-                // Recarrega cardápio se a seção for ativada
-                if (targetId === "cardapio") {
-                    carregarCardapioCliente();
-                }
             }
-            // Ativa o link de navegação correspondente
             navLinks.forEach((link) => {
                 if (link.getAttribute("data-target") === targetId) {
                     link.classList.add("active");
@@ -261,11 +230,10 @@ function configurarFiltrosCardapio() {
     const filtroContainer = document.querySelector(".filtro-categorias");
     if (!filtroContainer) return;
 
-    // Usar delegação de eventos para os botões de filtro
     filtroContainer.addEventListener("click", function (e) {
         if (e.target.classList.contains("filtro-btn")) {
             const filtroBtns = filtroContainer.querySelectorAll(".filtro-btn");
-            const cardProdutos = document.querySelectorAll(".card-produto");
+            const cardProdutos = document.querySelectorAll(".card-produto, .card-promocao");
 
             filtroBtns.forEach((b) => b.classList.remove("active"));
             e.target.classList.add("active");
@@ -274,10 +242,14 @@ function configurarFiltrosCardapio() {
 
             cardProdutos.forEach((card) => {
                 const cardCategoria = card.getAttribute("data-categoria");
-                if (categoria === "todas" || cardCategoria === categoria) {
-                    card.style.display = "flex";
+                if (cardCategoria) {
+                    if (categoria === "todas" || cardCategoria === categoria) {
+                        card.style.display = "flex";
+                    } else {
+                        card.style.display = "none";
+                    }
                 } else {
-                    card.style.display = "none";
+                    card.style.display = (categoria === "todas") ? "flex" : "none";
                 }
             });
         }
@@ -288,32 +260,23 @@ function configurarEventosMontagem() {
     const secaoMontagem = document.getElementById("montar-pizza");
     if (!secaoMontagem) return;
 
-    // Listener para mudanças nos inputs (delegação no container de opções)
-    const opcoesPizzaDiv = secaoMontagem.querySelector(".opcoes-pizza");
-    if (opcoesPizzaDiv) {
-        opcoesPizzaDiv.addEventListener("change", function (e) {
-            if (e.target.matches("input[name=\"tamanho\"]") || e.target.matches("input[name=\"ingredientes\"]") || e.target.matches("input[name=\"borda\"]")) {
-                atualizarResumoMontagem();
-            }
-        });
-    }
+    secaoMontagem.addEventListener("change", function (e) {
+        if (e.target.matches('input[name="tamanho"], input[name="ingredientes"], input[name="borda"]')) {
+            atualizarResumoMontagem();
+        }
+    });
 
-    // Listener para o botão de adicionar pizza montada
     const btnAdicionarMontada = document.getElementById("btn-adicionar-montada");
     if (btnAdicionarMontada) {
-        // Remove listener antigo para evitar duplicação (melhor abordagem)
-        const newBtn = btnAdicionarMontada.cloneNode(true);
-        btnAdicionarMontada.parentNode.replaceChild(newBtn, btnAdicionarMontada);
-
-        newBtn.addEventListener("click", function() {
+        const clone = btnAdicionarMontada.cloneNode(true);
+        btnAdicionarMontada.parentNode.replaceChild(clone, btnAdicionarMontada);
+        document.getElementById("btn-adicionar-montada").addEventListener("click", function() {
             if (!this.disabled) {
                 adicionarPizzaMontadaAoCarrinho();
             }
         });
     }
 }
-
-// --- Lógica "Monte Sua Pizza" ---
 
 function calcularPrecoMontagem() {
     let precoBase = 0;
@@ -322,22 +285,26 @@ function calcularPrecoMontagem() {
     let nomeBorda = "Sem recheio";
     let precoBorda = 0;
     let precoIngredientesExtras = 0;
+    const limiteIngredientesGratis = 5;
+    const precoIngredientePadrao = 6.00;
 
-    const tamanhoInputChecked = document.querySelector("input[name=\"tamanho\"]:checked");
+    const tamanhoInputChecked = document.querySelector('input[name="tamanho"]:checked');
     if (tamanhoInputChecked) {
         nomeTamanho = tamanhoInputChecked.value;
         precoBase = parseFloat(tamanhoInputChecked.getAttribute("data-preco")) || 0;
     }
 
-    const ingredientesInputsChecked = document.querySelectorAll("input[name=\"ingredientes\"]:checked");
-    ingredientesInputsChecked.forEach(input => {
+    const ingredientesInputsChecked = document.querySelectorAll('input[name="ingredientes"]:checked');
+    ingredientesInputsChecked.forEach((input, index) => {
         const nomeIngrediente = input.value;
-        const precoData = parseFloat(input.getAttribute("data-preco")) || 0;
+        const precoData = parseFloat(input.getAttribute("data-preco")) || precoIngredientePadrao;
         ingredientesSelecionados.push(nomeIngrediente);
-        precoIngredientesExtras += precoData;
+        if (index >= limiteIngredientesGratis) {
+            precoIngredientesExtras += precoData;
+        }
     });
 
-    const bordaInputChecked = document.querySelector("input[name=\"borda\"]:checked");
+    const bordaInputChecked = document.querySelector('input[name="borda"]:checked');
     if (bordaInputChecked) {
         nomeBorda = bordaInputChecked.value;
         precoBorda = parseFloat(bordaInputChecked.getAttribute("data-preco")) || 0;
@@ -369,6 +336,8 @@ function atualizarResumoMontagem() {
     }
 
     const calculo = calcularPrecoMontagem();
+    const limiteIngredientesGratis = 5;
+    const precoIngredientePadrao = 6.00;
 
     resumoTamanhoSpan.textContent = calculo.nomeTamanho;
     resumoPrecoBaseSpan.textContent = `R$ ${calculo.precoBase.toFixed(2)}`;
@@ -376,28 +345,53 @@ function atualizarResumoMontagem() {
     let ingredientesHTML = "";
     if (calculo.ingredientesSelecionados.length > 0) {
         ingredientesHTML = "<h5>Ingredientes Adicionais:</h5>";
-        calculo.ingredientesSelecionados.forEach(nomeIngrediente => {
+        calculo.ingredientesSelecionados.forEach((nomeIngrediente, index) => {
             const input = document.querySelector(`input[name="ingredientes"][value="${nomeIngrediente}"]`);
-            const precoData = input ? (parseFloat(input.getAttribute("data-preco")) || 0) : 0;
-            ingredientesHTML += `<div class="resumo-item"><span>- ${nomeIngrediente}</span><span>+ R$ ${precoData.toFixed(2)}</span></div>`;
+            const precoData = input ? (parseFloat(input.getAttribute("data-preco")) || precoIngredientePadrao) : precoIngredientePadrao;
+
+            if (index < limiteIngredientesGratis) {
+                ingredientesHTML += `<div class="resumo-item"><span>- ${nomeIngrediente}</span><span>Incluso</span></div>`;
+            } else {
+                ingredientesHTML += `<div class="resumo-item"><span>- ${nomeIngrediente}</span><span>+ R$ ${precoData.toFixed(2)}</span></div>`;
+            }
         });
     } else {
-        ingredientesHTML = "<p><i>Nenhum ingrediente adicional selecionado.</i></p>";
+        ingredientesHTML = `<p><i>Selecione até ${limiteIngredientesGratis} ingredientes gratuitos. Extras custam a partir de R$ ${precoIngredientePadrao.toFixed(2)}.</i></p>`;
     }
     resumoIngredientesDiv.innerHTML = ingredientesHTML;
 
-    let bordaHTML = "<h5>Borda:</h5>";
-    const precoBordaLabel = calculo.precoBorda > 0 ? `+ R$ ${calculo.precoBorda.toFixed(2)}` : "Incluso";
-    bordaHTML += `<div class="resumo-item"><span>- ${calculo.nomeBorda}</span><span>${precoBordaLabel}</span></div>`;
-    resumoBordaDiv.innerHTML = bordaHTML;
-
+    resumoBordaDiv.innerHTML = `
+        <span>Borda: ${calculo.nomeBorda}</span>
+        <span>${calculo.precoBorda > 0 ? `+ R$ ${calculo.precoBorda.toFixed(2)}` : "R$ 0,00"}</span>
+    `;
     precoTotalSpan.textContent = `R$ ${calculo.precoTotalCalculado.toFixed(2)}`;
 
-    // Habilita/desabilita botão de adicionar se um tamanho for selecionado
-    btnAdicionarMontada.disabled = calculo.nomeTamanho === "Nenhum";
+    const tamanhoSelecionado = document.querySelector('input[name="tamanho"]:checked');
+    btnAdicionarMontada.disabled = !tamanhoSelecionado;
+    if (tamanhoSelecionado) {
+        btnAdicionarMontada.innerHTML = `<i class="fas fa-cart-plus"></i> Adicionar ao Carrinho`;
+    } else {
+        btnAdicionarMontada.innerHTML = `<i class="fas fa-cart-plus"></i> Selecione um Tamanho`;
+    }
 }
 
-// --- Lógica do Carrinho ---
+function adicionarPizzaMontadaAoCarrinho() {
+    const calculo = calcularPrecoMontagem();
+
+    if (calculo.nomeTamanho === "Nenhum") {
+        alert("Por favor, selecione o tamanho da pizza.");
+        return;
+    }
+
+    const nomePizzaMontada = `Pizza Montada - ${calculo.nomeTamanho}`;
+    const detalhes = {
+        tamanho: calculo.nomeTamanho,
+        ingredientes: calculo.ingredientesSelecionados,
+        borda: calculo.nomeBorda
+    };
+
+    adicionarAoCarrinho(`montada-${Date.now()}`, nomePizzaMontada, calculo.precoTotalCalculado, 1, detalhes);
+}
 
 function inicializarCarrinho() {
     const carrinhoSalvo = localStorage.getItem("carrinhoPizzaria");
@@ -405,72 +399,46 @@ function inicializarCarrinho() {
         carrinho = JSON.parse(carrinhoSalvo);
     }
     atualizarContadorCarrinho();
-    ativarBotoesAdicionar(); // Garante que os botões funcionem após carregar o carrinho
+    atualizarCarrinhoUI();
+    ativarBotoesAdicionar();
 }
 
-// Ativa os botões "Adicionar" usando delegação de eventos
 function ativarBotoesAdicionar() {
-    const gridProdutos = document.querySelector(".grid-produtos");
-    if (gridProdutos) {
-        gridProdutos.removeEventListener("click", handleAdicionarClick); // Remove listener antigo
-        gridProdutos.addEventListener("click", handleAdicionarClick); // Adiciona novo listener
-    }
-    // Adiciona listener para botões de promoção também
-    const promocoesContainer = document.querySelector(".promocoes-container");
-     if (promocoesContainer) {
-        promocoesContainer.removeEventListener("click", handleAdicionarClick);
-        promocoesContainer.addEventListener("click", handleAdicionarClick);
-    }
-}
-
-// Handler para cliques nos botões "Adicionar" (delegação)
-function handleAdicionarClick(event) {
-    const botaoAdicionar = event.target.closest(".btn-adicionar, .btn-promocao");
-    if (botaoAdicionar) {
-        const id = botaoAdicionar.getAttribute("data-id");
-        const nome = botaoAdicionar.getAttribute("data-nome");
-        const preco = parseFloat(botaoAdicionar.getAttribute("data-preco"));
-        adicionarAoCarrinho(id, nome, preco);
-    }
-}
-
-function adicionarPizzaMontadaAoCarrinho() {
-    const calculo = calcularPrecoMontagem();
-    if (calculo.nomeTamanho === "Nenhum") {
-        showPopup("Selecione um tamanho para a pizza!", "error");
-        return;
-    }
-
-    const nomePizzaMontada = `Pizza Montada (${calculo.nomeTamanho.split(" - ")[0]})`; // Ex: Pizza Montada (Média)
-    // Cria um ID único para a pizza montada baseado nas seleções
-    const idMontada = `montada-${Date.now()}`;
-
-    const detalhes = {
-        tamanho: calculo.nomeTamanho,
-        ingredientes: calculo.ingredientesSelecionados,
-        borda: calculo.nomeBorda
-    };
-
-    adicionarAoCarrinho(idMontada, nomePizzaMontada, calculo.precoTotalCalculado, 1, detalhes);
-
-    // Limpa a seleção da montagem (opcional)
-    // resetarMontagem();
-    showPopup("Pizza montada adicionada ao carrinho!", "success");
+    const botoesAdicionar = document.querySelectorAll(".btn-adicionar, .btn-promocao");
+    botoesAdicionar.forEach(botao => {
+        const clone = botao.cloneNode(true);
+        botao.parentNode.replaceChild(clone, botao);
+    });
+    document.querySelectorAll(".btn-adicionar, .btn-promocao").forEach((botao) => {
+        botao.addEventListener("click", function () {
+            const id = this.getAttribute("data-id");
+            const nome = this.getAttribute("data-nome");
+            const preco = parseFloat(this.getAttribute("data-preco"));
+            adicionarAoCarrinho(id, nome, preco, 1, null);
+        });
+    });
 }
 
 function adicionarAoCarrinho(id, nome, preco, quantidade = 1, detalhes = null) {
-    const itemExistente = carrinho.find((item) => item.id === id);
+    const idFinal = id.startsWith('montada-') ? id : id;
+    const itemExistente = carrinho.find((item) => item.id === idFinal);
 
-    if (itemExistente) {
+    if (itemExistente && !id.startsWith('montada-')) {
         itemExistente.quantidade += quantidade;
     } else {
-        carrinho.push({ id, nome, preco, quantidade, detalhes });
+        carrinho.push({
+            id: idFinal,
+            nome: nome,
+            preco: preco,
+            quantidade: quantidade,
+            detalhes: detalhes
+        });
     }
 
     localStorage.setItem("carrinhoPizzaria", JSON.stringify(carrinho));
     atualizarContadorCarrinho();
-    atualizarCarrinhoUI(); // Atualiza a UI do modal se estiver aberto
-    showPopup(`"${nome}" adicionado ao carrinho!`, "success", 1500); // Popup mais curto
+    atualizarCarrinhoUI();
+    alert(`${nome} adicionado ao carrinho!`);
 }
 
 function atualizarContadorCarrinho() {
@@ -487,7 +455,7 @@ function atualizarCarrinhoUI() {
     const carrinhoResumoDiv = document.getElementById("carrinho-resumo");
     const subtotalSpan = document.getElementById("subtotal-valor");
     const totalSpan = document.getElementById("total-valor");
-    const taxaEntrega = 10.00; // Exemplo de taxa fixa
+    const taxaEntrega = 10.00;
 
     if (!carrinhoItensDiv || !carrinhoVazioDiv || !carrinhoResumoDiv || !subtotalSpan || !totalSpan) return;
 
@@ -507,7 +475,6 @@ function atualizarCarrinhoUI() {
             carrinhoItensDiv.insertAdjacentHTML("beforeend", itemHTML);
         });
 
-        // Reconfigura listener de remoção usando delegação
         carrinhoItensDiv.removeEventListener("click", handleRemoverItemCarrinho);
         carrinhoItensDiv.addEventListener("click", handleRemoverItemCarrinho);
 
@@ -533,14 +500,14 @@ function criarItemCarrinhoHTML(item) {
             detalhesHTML += `<p class="item-detalhe"><i>Ingredientes:</i> ${item.detalhes.ingredientes.join(", ")}</p>`;
         }
         if (item.detalhes.borda && item.detalhes.borda !== "Sem Borda Recheada") {
-             detalhesHTML += `<p class="item-detalhe"><i>Borda:</i> ${item.detalhes.borda}</p>`;
+            detalhesHTML += `<p class="item-detalhe"><i>Borda:</i> ${item.detalhes.borda}</p>`;
         }
     }
 
     return `
         <div class="carrinho-item">
             <div class="item-info">
-                <h4>${item.nome} ${item.quantidade > 1 ? `(x${item.quantidade})` : ""}</h4>
+                <h4>${item.nome} ${item.quantidade > 1 ? `(x${item.quantidade})` : ''}</h4>
                 ${detalhesHTML}
                 <p>Preço Unitário: R$ ${item.preco.toFixed(2)}</p>
             </div>
@@ -559,44 +526,9 @@ function criarItemCarrinhoHTML(item) {
 function removerDoCarrinho(id) {
     const index = carrinho.findIndex((item) => item.id === id);
     if (index !== -1) {
-        const nomeItem = carrinho[index].nome;
         carrinho.splice(index, 1);
         localStorage.setItem("carrinhoPizzaria", JSON.stringify(carrinho));
         atualizarContadorCarrinho();
         atualizarCarrinhoUI();
-        showPopup(`"${nomeItem}" removido do carrinho.`, "info", 1500);
     }
 }
-
-// --- Finalizar Pedido --- MODIFICADO
-
-function configurarFinalizarPedido() {
-    const btnFinalizar = document.getElementById("btn-finalizar-pedido");
-    const modal = document.getElementById("carrinho-modal");
-
-    if (btnFinalizar && modal) {
-        btnFinalizar.addEventListener("click", () => {
-            if (carrinho.length > 0) {
-                // Simula o envio do pedido
-                console.log("Pedido finalizado:", carrinho);
-
-                // Limpa o carrinho
-                carrinho = [];
-                localStorage.removeItem("carrinhoPizzaria");
-
-                // Atualiza a UI
-                atualizarContadorCarrinho();
-                atualizarCarrinhoUI();
-
-                // Fecha o modal
-                modal.classList.remove("active");
-
-                // Exibe pop-up de sucesso
-                showPopup("Pedido finalizado com sucesso! Obrigado!", "success", 2500); // Duração um pouco maior
-            } else {
-                showPopup("Seu carrinho está vazio.", "info");
-            }
-        });
-    }
-}
-
