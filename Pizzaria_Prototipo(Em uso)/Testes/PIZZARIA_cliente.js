@@ -11,84 +11,95 @@ let opcoesMontagem = {
 // --- Funções de Inicialização e Carregamento ---
 
 document.addEventListener("DOMContentLoaded", function () {
-    carregarCardapioCliente();
+    // *** MODIFICADO: Carrega TODOS os produtos em suas seções corretas ao iniciar ***
+    carregarProdutosCliente();
     carregarOpcoesMontagemCliente();
     popularOpcoesMontagemCliente();
     inicializarCarrinho();
     configurarNavegacao();
-    configurarFiltrosCardapio();
+    // configurarFiltrosCardapio(); // Filtros podem precisar de ajuste se aplicados a outras seções
     configurarEventosMontagem();
     atualizarResumoMontagem();
-    configurarFinalizarPedido(); // Adicionado para configurar o botão de finalizar
+    configurarFinalizarPedido();
+    // *** MODIFICADO: Ativa botões de adicionar em TODAS as seções após carregar tudo ***
+    ativarBotoesAdicionar();
 });
 
-// Carrega o cardápio principal (pizzas prontas) do localStorage
-function carregarCardapioCliente() {
-    const cardapioSalvo = localStorage.getItem("cardapioPizzaria");
-    const gridProdutos = document.querySelector(".grid-produtos");
-    if (!gridProdutos) return;
+/*
+ * MODIFICADO: Carrega TODOS os produtos (pizzas, promoções, doces, bebidas)
+ * do localStorage e os distribui nas seções corretas da página do cliente.
+ */
+function carregarProdutosCliente() {
+    // Pega a lista completa de produtos salvos pelo admin
+    const produtosSalvos = localStorage.getItem("cardapioPizzaria");
+    let produtos = [];
+    if (produtosSalvos) {
+        produtos = JSON.parse(produtosSalvos);
+    }
 
-    gridProdutos.innerHTML = ""; // Limpa o grid antes de carregar
+    // Seleciona os containers (divs) onde os cards de produtos serão inseridos para cada seção
+    // É importante que esses IDs e classes existam no seu PIZZARIA_cliente.html
+    const containers = {
+        cardapio: document.querySelector("#cardapio .grid-produtos"),
+        promocoes: document.querySelector("#promocoes .promocoes-container"), // Ajuste se necessário
+        "pizzas-doces": document.querySelector("#pizzas-doces .grid-produtos"), // Garanta que #pizzas-doces exista
+        bebidas: document.querySelector("#bebidas .grid-produtos") // Garanta que #bebidas exista
+    };
 
-    if (cardapioSalvo) {
-        const pizzas = JSON.parse(cardapioSalvo);
-        if (pizzas.length > 0) {
-             pizzas.forEach((pizza, index) => {
-                const cardHTML = criarCardPizzaAdmin(pizza, index);
-                gridProdutos.insertAdjacentHTML("beforeend", cardHTML);
-            });
-        } else {
-             gridProdutos.innerHTML = "<p>Nenhuma pizza cadastrada no momento.</p>";
+    // Limpa todos os containers antes de adicionar os produtos
+    for (const secao in containers) {
+        if (containers[secao]) {
+            containers[secao].innerHTML = "";
         }
+    }
+
+    // Verifica se há produtos para exibir
+    if (produtos.length > 0) {
+        // Passa por cada produto da lista
+        produtos.forEach((produto, index) => {
+            // Verifica em qual seção este produto deve entrar (padrão: 'cardapio' se não especificado)
+            const secaoDestino = produto.secao || "cardapio";
+            // Pega o container HTML correspondente à seção do produto
+            const containerDestino = containers[secaoDestino];
+
+            // Se o container para aquela seção existir no HTML...
+            if (containerDestino) {
+                // Cria o HTML do card para este produto
+                // *** MODIFICADO: Usando uma função mais genérica criarCardProduto ***
+                const cardHTML = criarCardProduto(produto, index, secaoDestino);
+                // Insere o HTML do card dentro do container correto
+                containerDestino.insertAdjacentHTML("beforeend", cardHTML);
+            } else {
+                // Aviso caso a seção definida no admin não exista no HTML do cliente
+                console.warn(`Container para a seção "${secaoDestino}" não encontrado no HTML do cliente para o produto: ${produto.nome}`);
+            }
+        });
     } else {
-        gridProdutos.innerHTML = "<p>Nenhuma pizza cadastrada no momento.</p>";
+        // Mensagem se não houver nenhum produto cadastrado
+        if (containers.cardapio) containers.cardapio.innerHTML = "<p>Nenhum produto cadastrado no momento.</p>";
     }
-    ativarBotoesAdicionar(); // Ativa botões mesmo se o cardápio estiver vazio inicialmente
+
+    // OBS: A função ativarBotoesAdicionar() foi movida para o DOMContentLoaded
+    // para garantir que seja chamada APÓS todos os produtos serem carregados.
 }
 
-// Adiciona o botão de filtro "Do Administrador" se houver pizzas do admin
-function adicionarFiltroAdmin() {
-    const filtroCategorias = document.querySelector(".filtro-categorias");
-    // Verifica se o botão já existe para não duplicar
-    if (filtroCategorias && !filtroCategorias.querySelector("button[data-categoria=\"admin\"]")) {
-        const categoriaBotao = document.createElement("button");
-        categoriaBotao.className = "filtro-btn";
-        categoriaBotao.setAttribute("data-categoria", "admin");
-        categoriaBotao.textContent = "Do Administrador";
-        // Insere antes do último botão (se houver) ou no final
-        const ultimoBotao = filtroCategorias.lastElementChild;
-        if (ultimoBotao) {
-             filtroCategorias.insertBefore(categoriaBotao, ultimoBotao);
-        } else {
-             filtroCategorias.appendChild(categoriaBotao);
-        }
-    }
-}
-
-// Cria o HTML para um card de pizza vindo do admin
-function criarCardPizzaAdmin(pizza, index) {
-    const uniqueId = `admin-${pizza.nome.replace(/\s+/g, "-")}-${pizza.preco}-${index}`;
-    // Usa uma imagem de placeholder mais específica ou permite upload futuro
-    const imageUrl = `https://via.placeholder.com/300x200/D32F2F/FFFFFF?text=${encodeURIComponent(pizza.nome)}`;
-    return `
-        <div class="card-produto" data-categoria="admin">
-            <div class="produto-img">
-                <img src="${imageUrl}" alt="${pizza.nome}">
-                <span class="tag-destaque">Cardápio</span>
-            </div>
-            <div class="produto-info">
-                <h3>${pizza.nome}</h3>
-                <p class="ingredientes">${pizza.ingredientes}</p>
-                <div class="produto-footer">
-                    <span class="preco">R$ ${pizza.preco.toFixed(2)}</span>
-                    <button class="btn-adicionar" data-id="${uniqueId}" data-nome="${pizza.nome}" data-preco="${pizza.preco}">
-                        <i class="fas fa-plus"></i> Adicionar
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-}
+/*
+ * MODIFICADO: Cria o HTML para um card de produto (pizza, bebida, etc.).
+ * Adapta ligeiramente a estrutura ou classes se necessário, baseado na seção.
+ * @param {object} produto - O objeto do produto com nome, ingredientes, preco, secao.
+ * @param {number} index - O índice do produto na lista original (para IDs únicos).
+ * @param {string} secaoDestino - A seção onde o card será inserido ('cardapio', 'promocoes', etc.).
+ * @returns {string} - O HTML do card do produto.
+ */
+function criarCardProduto(produto, index, secaoDestino) {
+    // Cria um ID único para o botão, usando a seção e o índice
+    const uniqueId = `${secaoDestino}-${produto.nome.replace(/\s+/g, "-")}-${index}`;
+    // Placeholder de imagem genérico (pode ser melhorado com upload real)
+    const imageUrl = `https://via.placeholder.com/300x200/888/FFFFFF?text=${encodeURIComponent(produto.nome)}`;
+    // Define a classe principal do card. Para promoções, usa uma classe diferente.
+    const cardClass = secaoDestino === 'promocoes' ? 'card-promocao' : 'card-produto';
+    // Define a tag de destaque (pode variar por seção)
+    const tagDestaque = secaoDestino.charAt(0).toUpperCase() + secaoDestino.slice(1).replace('-', ' '); // Ex: 
 
 // Carrega as opções de montagem (tamanhos, ingredientes, bordas) do localStorage
 function carregarOpcoesMontagemCliente() {
@@ -176,58 +187,165 @@ function popularOpcoesMontagemCliente() {
 
 // --- Configuração de Eventos ---
 
+/*
+ * Configura a navegação entre as seções da página (Cardápio, Promoções, etc.)
+ * e a abertura/fechamento do modal do carrinho.
+ * Adiciona também a funcionalidade de rolagem suave ao clicar nos links.
+ */
 function configurarNavegacao() {
+    // Seleciona todos os elementos que servem como links de navegação (incluindo o botão do banner e o ícone do carrinho)
     const navLinks = document.querySelectorAll(".nav-link");
+    // Seleciona todas as seções principais de conteúdo da página
     const secoes = document.querySelectorAll(".secao");
+    // Seleciona o elemento do modal (janela pop-up) do carrinho
     const modal = document.getElementById("carrinho-modal");
+    // Seleciona o botão de fechar dentro do modal do carrinho
     const fecharModal = document.querySelector(".fechar-modal");
+    // Seleciona todos os botões "Continuar Comprando" (pode haver mais de um, ex: no modal vazio)
     const btnContinuarComprando = document.querySelectorAll(".btn-continuar-comprando");
 
+    /*
+     * Função auxiliar para mostrar a seção correta ou o modal do carrinho.
+     * @param {string} targetId - O ID da seção ou modal a ser exibido (ex: "cardapio", "carrinho-modal").
+     */
     function mostrarSecao(targetId) {
+        // 1. Esconde todas as seções primeiro
         secoes.forEach((secao) => secao.classList.remove("active"));
+        // 2. Remove a classe 'active' de todos os links de navegação
+        //    (o link correto será ativado depois, dependendo do que foi clicado)
         navLinks.forEach((link) => link.classList.remove("active"));
 
+        // 3. Verifica se o alvo é o modal do carrinho
         if (targetId === "carrinho-modal" && modal) {
+            // Mostra o modal adicionando a classe 'active'
             modal.classList.add("active");
+            // Atualiza a interface do carrinho (lista de itens, total, etc.)
             atualizarCarrinhoUI();
+            // Encontra o link específico do carrinho (ícone) e o marca como ativo
+            const carrinhoLink = document.querySelector('.nav-link[data-target="carrinho-modal"]');
+            if (carrinhoLink) carrinhoLink.classList.add("active");
         } else {
+            // 4. Se não for o modal, tenta mostrar uma seção normal
+            // Esconde o modal caso ele esteja aberto
+            if (modal) modal.classList.remove("active");
+
+            // Encontra a seção pelo ID
             const targetSecao = document.getElementById(targetId);
+            // Se a seção existir...
             if (targetSecao) {
+                // ...mostra a seção adicionando a classe 'active'
                 targetSecao.classList.add("active");
-                // Recarrega opções de montagem se a seção for ativada
+
+                // --- Lógica adicional ao ativar seções específicas ---
+                // Se for a seção "Monte Sua Pizza", recarrega as opções e atualiza o resumo
                 if (targetId === "montar-pizza") {
                     carregarOpcoesMontagemCliente();
                     popularOpcoesMontagemCliente();
                     configurarEventosMontagem();
                     atualizarResumoMontagem();
                 }
-                // Recarrega cardápio se a seção for ativada
+                // Se for a seção "Cardápio", recarrega os cards de pizza
                 if (targetId === "cardapio") {
                     carregarCardapioCliente();
                 }
+                // --------------------------------------------------------
             }
-            // Ativa o link de navegação correspondente
-            navLinks.forEach((link) => {
-                if (link.getAttribute("data-target") === targetId) {
-                    link.classList.add("active");
-                }
-            });
+            // 5. Ativa o link de navegação correspondente à seção mostrada
+            // (Isso será feito no listener do clique, após chamar esta função)
         }
     }
 
+    // 6. Adiciona um ouvinte de eventos de clique para CADA link de navegação
     navLinks.forEach((link) => {
         link.addEventListener("click", function (e) {
+            // Previne o comportamento padrão do link (que seria navegar para '#', recarregar a página ou ir para outra URL)
             e.preventDefault();
+
+            // Pega o valor do atributo 'data-target' do link que foi clicado.
+            // Este valor deve ser o ID da seção ou modal que o link deve mostrar.
+            // Exemplo: <a href="#" class="nav-link" data-target="cardapio">...</a> -> targetId será "cardapio"
             const targetId = this.getAttribute("data-target");
-            mostrarSecao(targetId);
+
+            // Tenta encontrar o elemento HTML na página que tenha o ID correspondente ao targetId.
+            // Exemplo: Se targetId for "cardapio", procura por <section id="cardapio">...
+            const targetElement = document.getElementById(targetId);
+
+            // 7. Verifica se o elemento alvo foi encontrado na página
+            if (targetElement) {
+                // --- IMPLEMENTAÇÃO DA ROLAGEM SUAVE ---
+                // Se o elemento alvo existe (é uma seção da página, não o modal),
+                // manda o navegador rolar a visualização suavemente até que este elemento fique visível.
+                // A opção 'behavior: "smooth"' é a chave para a animação de rolagem.
+                targetElement.scrollIntoView({ behavior: "smooth" });
+                // ----------------------------------------
+
+                // Após iniciar a rolagem (ou imediatamente se já estiver visível),
+                // chama a função para efetivamente mostrar a seção (adicionar classe 'active')
+                // e esconder as outras.
+                mostrarSecao(targetId);
+
+                // Remove a classe 'active' de todos os outros links de navegação
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                // Adiciona a classe 'active' APENAS ao link que foi clicado
+                this.classList.add('active');
+
+            } else if (targetId === "carrinho-modal") {
+                // 8. Se o alvo não foi encontrado como elemento de seção, mas é o ID do modal,
+                // apenas chama a função para mostrar o modal.
+                mostrarSecao(targetId);
+                // Marca o link do carrinho como ativo
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            } else {
+                // 9. Se o elemento alvo não foi encontrado E não é o modal,
+                // exibe um aviso no console do navegador. Isso ajuda a encontrar erros
+                // se um link estiver apontando para um ID que não existe.
+                console.warn(`Elemento alvo com ID "${targetId}" não encontrado.`);
+            }
         });
     });
 
+    // 10. Configura o botão de fechar (o 'X') dentro do modal do carrinho
     if (fecharModal) {
-        fecharModal.addEventListener("click", () => modal.classList.remove("active"));
+        fecharModal.addEventListener("click", () => {
+             // Simplesmente remove a classe 'active' do modal para escondê-lo
+             if(modal) modal.classList.remove("active");
+             // Lógica para reativar o link da seção que estava ativa ANTES de abrir o carrinho:
+             // Procura por um link ativo que NÃO seja o do carrinho, ou volta pro cardápio como padrão.
+             const activeLink = document.querySelector('.menu-principal .nav-link.active:not([data-target="carrinho-modal"])')
+                              || document.querySelector('.menu-principal .nav-link[data-target="cardapio"]'); // Padrão: cardápio
+             if(activeLink) {
+                 const previousTargetId = activeLink.getAttribute('data-target');
+                 mostrarSecao(previousTargetId); // Mostra a seção anterior
+                 navLinks.forEach(nav => nav.classList.remove('active')); // Limpa todos
+                 activeLink.classList.add('active'); // Reativa o link correto
+             } else {
+                 // Se nenhum link estava ativo (caso raro), volta para o cardápio
+                 mostrarSecao('cardapio');
+                 const cardapioLink = document.querySelector('.menu-principal .nav-link[data-target="cardapio"]');
+                 if(cardapioLink) cardapioLink.classList.add('active');
+             }
+        });
     }
+
+    // 11. Configura os botões "Continuar Comprando" dentro do modal
     btnContinuarComprando.forEach((btn) => {
-        btn.addEventListener("click", () => modal.classList.remove("active"));
+        btn.addEventListener("click", () => {
+            // A lógica é a mesma do botão de fechar: esconde o modal e volta para a seção anterior.
+            if(modal) modal.classList.remove("active");
+             const activeLink = document.querySelector('.menu-principal .nav-link.active:not([data-target="carrinho-modal"])')
+                              || document.querySelector('.menu-principal .nav-link[data-target="cardapio"]');
+             if(activeLink) {
+                 const previousTargetId = activeLink.getAttribute('data-target');
+                 mostrarSecao(previousTargetId);
+                 navLinks.forEach(nav => nav.classList.remove('active'));
+                 activeLink.classList.add('active');
+             } else {
+                 mostrarSecao('cardapio');
+                 const cardapioLink = document.querySelector('.menu-principal .nav-link[data-target="cardapio"]');
+                 if(cardapioLink) cardapioLink.classList.add('active');
+             }
+        });
     });
 }
 

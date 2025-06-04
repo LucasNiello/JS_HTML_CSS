@@ -176,58 +176,165 @@ function popularOpcoesMontagemCliente() {
 
 // --- Configuração de Eventos ---
 
+/*
+ * Configura a navegação entre as seções da página (Cardápio, Promoções, etc.)
+ * e a abertura/fechamento do modal do carrinho.
+ * Adiciona também a funcionalidade de rolagem suave ao clicar nos links.
+ */
 function configurarNavegacao() {
+    // Seleciona todos os elementos que servem como links de navegação (incluindo o botão do banner e o ícone do carrinho)
     const navLinks = document.querySelectorAll(".nav-link");
+    // Seleciona todas as seções principais de conteúdo da página
     const secoes = document.querySelectorAll(".secao");
+    // Seleciona o elemento do modal (janela pop-up) do carrinho
     const modal = document.getElementById("carrinho-modal");
+    // Seleciona o botão de fechar dentro do modal do carrinho
     const fecharModal = document.querySelector(".fechar-modal");
+    // Seleciona todos os botões "Continuar Comprando" (pode haver mais de um, ex: no modal vazio)
     const btnContinuarComprando = document.querySelectorAll(".btn-continuar-comprando");
 
+    /*
+     * Função auxiliar para mostrar a seção correta ou o modal do carrinho.
+     * @param {string} targetId - O ID da seção ou modal a ser exibido (ex: "cardapio", "carrinho-modal").
+     */
     function mostrarSecao(targetId) {
+        // 1. Esconde todas as seções primeiro
         secoes.forEach((secao) => secao.classList.remove("active"));
+        // 2. Remove a classe 'active' de todos os links de navegação
+        //    (o link correto será ativado depois, dependendo do que foi clicado)
         navLinks.forEach((link) => link.classList.remove("active"));
 
+        // 3. Verifica se o alvo é o modal do carrinho
         if (targetId === "carrinho-modal" && modal) {
+            // Mostra o modal adicionando a classe 'active'
             modal.classList.add("active");
+            // Atualiza a interface do carrinho (lista de itens, total, etc.)
             atualizarCarrinhoUI();
+            // Encontra o link específico do carrinho (ícone) e o marca como ativo
+            const carrinhoLink = document.querySelector('.nav-link[data-target="carrinho-modal"]');
+            if (carrinhoLink) carrinhoLink.classList.add("active");
         } else {
+            // 4. Se não for o modal, tenta mostrar uma seção normal
+            // Esconde o modal caso ele esteja aberto
+            if (modal) modal.classList.remove("active");
+
+            // Encontra a seção pelo ID
             const targetSecao = document.getElementById(targetId);
+            // Se a seção existir...
             if (targetSecao) {
+                // ...mostra a seção adicionando a classe 'active'
                 targetSecao.classList.add("active");
-                // Recarrega opções de montagem se a seção for ativada
+
+                // --- Lógica adicional ao ativar seções específicas ---
+                // Se for a seção "Monte Sua Pizza", recarrega as opções e atualiza o resumo
                 if (targetId === "montar-pizza") {
                     carregarOpcoesMontagemCliente();
                     popularOpcoesMontagemCliente();
                     configurarEventosMontagem();
                     atualizarResumoMontagem();
                 }
-                // Recarrega cardápio se a seção for ativada
+                // Se for a seção "Cardápio", recarrega os cards de pizza
                 if (targetId === "cardapio") {
                     carregarCardapioCliente();
                 }
+                // --------------------------------------------------------
             }
-            // Ativa o link de navegação correspondente
-            navLinks.forEach((link) => {
-                if (link.getAttribute("data-target") === targetId) {
-                    link.classList.add("active");
-                }
-            });
+            // 5. Ativa o link de navegação correspondente à seção mostrada
+            // (Isso será feito no listener do clique, após chamar esta função)
         }
     }
 
+    // 6. Adiciona um ouvinte de eventos de clique para CADA link de navegação
     navLinks.forEach((link) => {
         link.addEventListener("click", function (e) {
+            // Previne o comportamento padrão do link (que seria navegar para '#', recarregar a página ou ir para outra URL)
             e.preventDefault();
+
+            // Pega o valor do atributo 'data-target' do link que foi clicado.
+            // Este valor deve ser o ID da seção ou modal que o link deve mostrar.
+            // Exemplo: <a href="#" class="nav-link" data-target="cardapio">...</a> -> targetId será "cardapio"
             const targetId = this.getAttribute("data-target");
-            mostrarSecao(targetId);
+
+            // Tenta encontrar o elemento HTML na página que tenha o ID correspondente ao targetId.
+            // Exemplo: Se targetId for "cardapio", procura por <section id="cardapio">...
+            const targetElement = document.getElementById(targetId);
+
+            // 7. Verifica se o elemento alvo foi encontrado na página
+            if (targetElement) {
+                // --- IMPLEMENTAÇÃO DA ROLAGEM SUAVE ---
+                // Se o elemento alvo existe (é uma seção da página, não o modal),
+                // manda o navegador rolar a visualização suavemente até que este elemento fique visível.
+                // A opção 'behavior: "smooth"' é a chave para a animação de rolagem.
+                targetElement.scrollIntoView({ behavior: "smooth" });
+                // ----------------------------------------
+
+                // Após iniciar a rolagem (ou imediatamente se já estiver visível),
+                // chama a função para efetivamente mostrar a seção (adicionar classe 'active')
+                // e esconder as outras.
+                mostrarSecao(targetId);
+
+                // Remove a classe 'active' de todos os outros links de navegação
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                // Adiciona a classe 'active' APENAS ao link que foi clicado
+                this.classList.add('active');
+
+            } else if (targetId === "carrinho-modal") {
+                // 8. Se o alvo não foi encontrado como elemento de seção, mas é o ID do modal,
+                // apenas chama a função para mostrar o modal.
+                mostrarSecao(targetId);
+                // Marca o link do carrinho como ativo
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            } else {
+                // 9. Se o elemento alvo não foi encontrado E não é o modal,
+                // exibe um aviso no console do navegador. Isso ajuda a encontrar erros
+                // se um link estiver apontando para um ID que não existe.
+                console.warn(`Elemento alvo com ID "${targetId}" não encontrado.`);
+            }
         });
     });
 
+    // 10. Configura o botão de fechar (o 'X') dentro do modal do carrinho
     if (fecharModal) {
-        fecharModal.addEventListener("click", () => modal.classList.remove("active"));
+        fecharModal.addEventListener("click", () => {
+             // Simplesmente remove a classe 'active' do modal para escondê-lo
+             if(modal) modal.classList.remove("active");
+             // Lógica para reativar o link da seção que estava ativa ANTES de abrir o carrinho:
+             // Procura por um link ativo que NÃO seja o do carrinho, ou volta pro cardápio como padrão.
+             const activeLink = document.querySelector('.menu-principal .nav-link.active:not([data-target="carrinho-modal"])')
+                              || document.querySelector('.menu-principal .nav-link[data-target="cardapio"]'); // Padrão: cardápio
+             if(activeLink) {
+                 const previousTargetId = activeLink.getAttribute('data-target');
+                 mostrarSecao(previousTargetId); // Mostra a seção anterior
+                 navLinks.forEach(nav => nav.classList.remove('active')); // Limpa todos
+                 activeLink.classList.add('active'); // Reativa o link correto
+             } else {
+                 // Se nenhum link estava ativo (caso raro), volta para o cardápio
+                 mostrarSecao('cardapio');
+                 const cardapioLink = document.querySelector('.menu-principal .nav-link[data-target="cardapio"]');
+                 if(cardapioLink) cardapioLink.classList.add('active');
+             }
+        });
     }
+
+    // 11. Configura os botões "Continuar Comprando" dentro do modal
     btnContinuarComprando.forEach((btn) => {
-        btn.addEventListener("click", () => modal.classList.remove("active"));
+        btn.addEventListener("click", () => {
+            // A lógica é a mesma do botão de fechar: esconde o modal e volta para a seção anterior.
+            if(modal) modal.classList.remove("active");
+             const activeLink = document.querySelector('.menu-principal .nav-link.active:not([data-target="carrinho-modal"])')
+                              || document.querySelector('.menu-principal .nav-link[data-target="cardapio"]');
+             if(activeLink) {
+                 const previousTargetId = activeLink.getAttribute('data-target');
+                 mostrarSecao(previousTargetId);
+                 navLinks.forEach(nav => nav.classList.remove('active'));
+                 activeLink.classList.add('active');
+             } else {
+                 mostrarSecao('cardapio');
+                 const cardapioLink = document.querySelector('.menu-principal .nav-link[data-target="cardapio"]');
+                 if(cardapioLink) cardapioLink.classList.add('active');
+             }
+        });
     });
 }
 

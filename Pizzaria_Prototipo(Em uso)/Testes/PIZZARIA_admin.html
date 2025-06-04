@@ -51,7 +51,24 @@
                 <label for="preco">Preço</label>
                 <input type="number" id="preco" placeholder="Digite o preço da pizza">
             </div>
-            <button onclick="adicionarPizza()">Adicionar Pizza</button>
+            <!-- Campo para escolher a seção onde o produto será exibido -->
+            <div class="form-group">
+                <!-- Rótulo descritivo para o campo de seleção -->
+                <label for="secao-produto">Seção do Produto:</label>
+                <!-- Caixa de seleção (dropdown) -->
+                <select id="secao-produto">
+                    <!-- Opção 1: Cardápio Principal (Pizzas Salgadas) - O valor "cardapio" deve corresponder ao ID da seção no HTML do cliente -->
+                    <option value="cardapio">Cardápio (Pizzas)</option>
+                    <!-- Opção 2: Promoções - O valor "promocoes" deve corresponder ao ID da seção no HTML do cliente -->
+                    <option value="promocoes">Promoções</option>
+                    <!-- Opção 3: Pizzas Doces - O valor "pizzas-doces" deve corresponder ao ID da seção no HTML do cliente -->
+                    <option value="pizzas-doces">Pizzas Doces</option>
+                    <!-- Opção 4: Bebidas - O valor "bebidas" deve corresponder ao ID da seção no HTML do cliente -->
+                    <option value="bebidas">Bebidas</option>
+                </select>
+            </div>
+            <!-- Botão original para adicionar o produto (texto atualizado para ser mais genérico) -->
+            <button onclick="adicionarPizza()">Adicionar Produto</button>
         </div>
 
         <!-- Seção de Consulta -->
