@@ -17,6 +17,8 @@
  * @param {number} [duracao=2000] - O tempo, em milissegundos, que a mensagem
  *                                  ficará visível na tela antes de desaparecer.
  *                                  Por padrão, a duração é 2000 ms (ou seja, 2 segundos).
+// ✅ Para que serve o @Param?
+// Serve para descrever um parâmetro de uma função, método ou procedimento. Ela ajuda a documentar o propósito, o tipo e quaisquer restrições ou comportamentos esperados de cada parâmetro que a função recebe.
  */
 function showPopup(mensagem, tipo = "info", duracao = 2000) {
     // Verifica se já existe um popup com o ID "popup-global" na tela
