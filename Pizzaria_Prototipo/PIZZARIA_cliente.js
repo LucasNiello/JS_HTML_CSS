@@ -16,7 +16,11 @@ document.addEventListener("DOMContentLoaded", function () {
     popularOpcoesMontagemCliente();
     inicializarCarrinho();
     configurarNavegacao();
+
+// #########################################################
     // configurarFiltrosCardapio(); -->> Desativado, pode ser usada futuramente (tem no HTML)
+// #########################################################
+    
     configurarEventosMontagem();
     atualizarResumoMontagem();
     configurarFinalizarPedido(); // Adicionado para configurar o botão de finalizar
