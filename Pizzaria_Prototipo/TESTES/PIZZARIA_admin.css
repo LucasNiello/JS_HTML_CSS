@@ -14,9 +14,9 @@
     --cinza-claro: #e0e0e0;
     --cinza-escuro: #333333;
     --sombra-padrao: 0 4px 12px rgba(0, 0, 0, 0.15);
-    --sombra-dourada: 0 4px 12px rgba(212, 175, 55, 0.25);
+    --sombra-dourada: 0 4px 12px rgba(212, 175, 55, 0.25); 
     --transicao: all 0.3s ease;
-    --verde: #27ae60; /* Adicionado para popup de sucesso */
+    --verde: #27ae60; 
 }
 
 /* Reset e estilos gerais */
