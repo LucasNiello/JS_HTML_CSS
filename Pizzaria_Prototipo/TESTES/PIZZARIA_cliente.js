@@ -1,29 +1,34 @@
 // cliente_updated.js - Funcionalidades para a página do cliente com integração localStorage
+// o localStorage é usado para persistir dados entre sessões e o JSON para manipulação de objetos.
 
 // --- Variáveis Globais ---
-let carrinho = [];
-let opcoesMontagem = {
-    tamanhos: [],
-    ingredientes: [],
-    bordas: []
+let carrinho = []; // Armazena os itens do carrinho
+let opcoesMontagem = { // Armazena as opções de montagem da pizza
+    tamanhos: [], // Ex: [{ nome: "Média - Massa Tradicional", preco: 40.00 }]
+    ingredientes: [], // Ex: [{ nome: "Queijo Mussarela", preco: 0.00 }, { nome: "Molho de Tomate", preco: 0.00 }]
+    bordas: [] // Ex: [{ nome: "Borda Recheada", preco: 10.00 }]
 };
 
 // --- Funções de Inicialização e Carregamento ---
 
-document.addEventListener("DOMContentLoaded", function () {
-    carregarCardapioCliente();
-    carregarOpcoesMontagemCliente();
-    popularOpcoesMontagemCliente();
-    inicializarCarrinho();
-    configurarNavegacao();
+document.addEventListener("DOMContentLoaded", function () { // Evento disparado quando o DOM estiver completamente carregado
+    carregarCardapioCliente(); // Carrega o cardápio principal (pizzas prontas)
+    carregarOpcoesMontagemCliente(); // Carrega as opções de montagem (tamanhos, ingredientes, bordas)
+    popularOpcoesMontagemCliente(); // Popula a seção "Monte Sua Pizza" com as opções carregadas
+    inicializarCarrinho(); // Inicializa o carrinho com os dados do localStorage
+    configurarNavegacao(); // Configura a navegação entre seções e o modal do carrinho
+
+// #########################################################
     // configurarFiltrosCardapio(); -->> Desativado, pode ser usada futuramente (tem no HTML)
-    configurarEventosMontagem();
-    atualizarResumoMontagem();
+// #########################################################
+    
+    configurarEventosMontagem(); // Configura eventos para a seção "Monte Sua Pizza"
+    atualizarResumoMontagem(); // Atualiza o resumo da montagem ao carregar a página
     configurarFinalizarPedido(); // Adicionado para configurar o botão de finalizar
 });
 
 // Carrega o cardápio principal (pizzas prontas) do localStorage
-function carregarCardapioCliente() {
+function carregarCardapioCliente() { // Função para carregar o cardápio de pizzas do localStorage
     const cardapioSalvo = localStorage.getItem("cardapioPizzaria");
     const gridProdutos = document.querySelector(".grid-produtos");
     if (!gridProdutos) return;
@@ -92,7 +97,7 @@ function criarCardPizzaAdmin(pizza, index) {
 
 // Carrega as opções de montagem (tamanhos, ingredientes, bordas) do localStorage
 function carregarOpcoesMontagemCliente() {
-    const opcoesSalvas = localStorage.getItem("opcoesMontagemPizzaria");
+    const opcoesSalvas = localStorage.getItem("opcoesMontagemPizzaria"); // Tenta obter as opções de montagem do localStorage
     if (opcoesSalvas) {
         opcoesMontagem = JSON.parse(opcoesSalvas);
     } else {
@@ -548,18 +553,19 @@ function adicionarAoCarrinho(id, nome, preco, quantidade = 1, detalhes = null) {
         carrinho.push({ id, nome, preco, quantidade, detalhes });
     }
 
-    localStorage.setItem("carrinhoPizzaria", JSON.stringify(carrinho));
+    
+    localStorage.setItem("carrinhoPizzaria", JSON.stringify(carrinho)); // Salva o carrinho atualizado no localStorage
     atualizarContadorCarrinho();
     atualizarCarrinhoUI(); // Atualiza a UI do modal se estiver aberto
     showPopup(`"${nome}" adicionado ao carrinho!`, "success", 1500); // Popup mais curto
 }
 
-function atualizarContadorCarrinho() {
+function atualizarContadorCarrinho() { //
     const contador = document.querySelector(".contador-itens");
     if (!contador) return;
     const totalItens = carrinho.reduce((soma, item) => soma + item.quantidade, 0);
     contador.textContent = totalItens;
-    contador.style.display = totalItens > 0 ? "flex" : "none";
+    contador.style.display = totalItens > 0 ? "flex" : "none"; 
 }
 
 function atualizarCarrinhoUI() {
@@ -649,8 +655,8 @@ function removerDoCarrinho(id) {
     }
 }
 
-// --- Finalizar Pedido --- MODIFICADO
 
+// --- Lógica de Finalização do Pedido ---
 function configurarFinalizarPedido() {
     const btnFinalizar = document.getElementById("btn-finalizar-pedido");
     const modal = document.getElementById("carrinho-modal");
@@ -662,43 +668,77 @@ function configurarFinalizarPedido() {
                 try {
                     let vendas = JSON.parse(localStorage.getItem("vendasPizzaria") || "[]");
                     const dataVenda = new Date().toLocaleString();
-                    // Adiciona cada item do carrinho como uma venda separada (ou agrupa se preferir)
                     carrinho.forEach(item => {
                         vendas.push({
                             pizza: item.nome,
-                            preco: item.preco * item.quantidade, // Salva o preço total do item
-                            quantidade: item.quantidade, // Guarda a quantidade
-                            comprador: "Cliente Web", // Identificador genérico
+                            preco: item.preco * item.quantidade,
+                            quantidade: item.quantidade,
+                            comprador: "Cliente Web",
                             data: dataVenda,
-                            detalhes: item.detalhes // Salva detalhes da pizza montada, se houver
+                            detalhes: item.detalhes
                         });
                     });
                     localStorage.setItem("vendasPizzaria", JSON.stringify(vendas));
                     console.log("Venda registrada no localStorage:", vendas);
                 } catch (error) {
                     console.error("Erro ao registrar venda no localStorage:", error);
-                    // Opcional: Informar o usuário sobre o erro no registro
-                    // showPopup("Erro ao registrar a venda. Tente novamente.", "error");
-                    // return; // Decide se impede a finalização ou continua
                 }
 
-                // 2. Limpa o carrinho
+                // 2. Exibe a nota fiscal antes de limpar o carrinho
+                gerarNotaFiscalSimulada(); // <- INSERIDO AQUI
+                document.getElementById("nota-fiscal").style.display = "block";
+
+                // 3. Limpa o carrinho
                 carrinho = [];
                 localStorage.removeItem("carrinhoPizzaria");
 
-                // 3. Atualiza a UI
+                // 4. Atualiza a UI
                 atualizarContadorCarrinho();
                 atualizarCarrinhoUI();
 
-                // 4. Fecha o modal
+                // 5. Fecha o modal do carrinho
                 modal.classList.remove("active");
 
-                // 5. Exibe pop-up de sucesso
+                // 6. Exibe pop-up de sucesso
                 showPopup("Pedido finalizado com sucesso! Obrigado!", "success", 2500);
             } else {
-                showPopup("Seu carrinho está vazio.", "info");
+                showPopup("Seu carrinho está vazio.", "info"); // Exibe mensagem se o carrinho estiver vazio
             }
         });
     }
 }
 
+    // --- Lógica de Nota Fiscal Simulada ---
+    function gerarNotaFiscalSimulada() { // Função para gerar uma nota fiscal simulada
+        const conteudo = document.getElementById("nota-fiscal-conteudo");// Obtém o elemento onde a nota fiscal será exibida
+        if (!conteudo) return; // Verifica se o elemento existe
+
+        let html = `<p><strong>Cliente:</strong> Cliente Web</p>`; // Nome do cliente (simulado)
+        html += `<p><strong>Data:</strong> ${new Date().toLocaleString()}</p>`; // Data e hora atual
+        html += `<hr><ul style="list-style:none; padding:0;">`; // Início da lista de itens
+
+        let total = 0;
+        carrinho.forEach((item) => {
+            const subtotal = item.preco * item.quantidade; // Calcula o subtotal para cada item
+            total += subtotal;
+            html += `<li><strong>${item.nome}</strong> x${item.quantidade} - R$ ${subtotal.toFixed(2)}</li>`;
+        });
+
+        html += `</ul><hr>`;
+        html += `<p><strong>Subtotal:</strong> R$ ${total.toFixed(2)}</p>`;
+        html += `<p><strong>Entrega:</strong> R$ 10.00</p>`;
+        html += `<h3>Total: R$ ${(total + 10).toFixed(2)}</h3>`;
+        
+
+        conteudo.innerHTML = html; // Atualiza o conteúdo da nota fiscal com os detalhes do pedido
+    }
+
+    function fecharNotaFiscal() { // Função para fechar a nota fiscal
+        document.getElementById("nota-fiscal").style.display = "none"; // Esconde a nota fiscal
+    }
+
+
+
+                                            /////////////////
+                                            //FIM do código//
+                                            /////////////////
