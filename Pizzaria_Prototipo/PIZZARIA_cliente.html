@@ -49,10 +49,8 @@
                 <h2>Cardápio de Pizzas</h2>
                 <p>Nossas pizzas são preparadas com ingredientes selecionados e técnicas artesanais</p>
             </div>
-<!-- ####################################################  
- 
+<!-- #################################################### -->
 
--->
             <!-- <div class="filtro-categorias">
                 <button class="filtro-btn active" data-categoria="todas">Todas</button>
                 <button class="filtro-btn" data-categoria="tradicionais">Tradicionais</button>
@@ -361,6 +359,20 @@
         <div class="footer-bottom">
             <p>&copy; 2025 Tratoria Rocca. Todos os direitos reservados.</p>
         </div>
+
+     <!-- Ao concluir a venda, o usuário poderá visualizar a nota fiscal em um modal.    -->
+        <div id="nota-fiscal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2><i class="fas fa-receipt"></i> Nota Fiscal</h2>
+      <span class="fechar-modal" onclick="fecharNotaFiscal()">&times;</span>
+    </div>
+    <div class="modal-body" id="nota-fiscal-conteudo">
+      <!-- Conteúdo da nota será preenchido via JavaScript -->
+    </div>
+  </div>
+</div>
+
     </footer>
 
     <!-- Script externo - Usando a nova versão com localStorage -->
