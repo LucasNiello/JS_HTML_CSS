@@ -741,4 +741,10 @@ function configurarFinalizarPedido() {
 
                                             /////////////////
                                             //FIM do código//
+<<<<<<< HEAD
                                             /////////////////
+=======
+                                            /////////////////
+
+                                            // FIM do código //
+>>>>>>> c676b34f20d3f545b9a6f078421a2da7dffb9f3c
