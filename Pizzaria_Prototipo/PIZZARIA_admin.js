@@ -1,146 +1,180 @@
-// ========================================
-// CÓDIGO REFATORADO - SEÇÃO "MONTE SUA PIZZA" - ADMIN
-// ========================================
-// Este código substitui apenas a parte problemática do PIZZARIA_admin.js
-// Mantenha o resto do arquivo original e substitua apenas as funções relacionadas ao "Monte Sua Pizza"
+// Lista de pizzas disponíveis no sistema
+let cardapio = []; // Array que armazena objetos de pizza {nome, ingredientes, preco}
 
-// Estrutura para armazenar as opções da montagem de pizza (REFATORADA)
+// Variável para armazenar a pizza que será alterada
+let pizzaParaAlterar = null; // Guarda temporariamente a pizza selecionada para alteração
+
+// Estrutura para armazenar as opções da montagem de pizza
 let opcoesMontagem = {
-    tamanhos: [],
-    ingredientes: [],
-    bordas: []
+    tamanhos: [],       // Array de objetos {nome, preco} para tamanhos de pizza
+    ingredientes: [],   // Array de objetos {nome, preco} para ingredientes adicionais
+    bordas: []          // Array de objetos {nome, preco} para bordas recheadas ou não
 };
 
-// ID counter para garantir IDs únicos
-let contadorIds = {
-    tamanhos: 1,
-    ingredientes: 1,
-    bordas: 1
-};
+// --- Funções do Cardápio Principal ---
 
-// ========================================
-// FUNÇÕES DE CARREGAMENTO E INICIALIZAÇÃO
-// ========================================
+// Carrega o cardápio do localStorage ao iniciar a página
+function carregarCardapio() {
+    const cardapioSalvo = localStorage.getItem("cardapioPizzaria");
+    if (cardapioSalvo) {
+        cardapio = JSON.parse(cardapioSalvo);
+        atualizarLista(); // Atualiza a exibição do cardápio na interface
+    }
+}
 
-/**
- * Carrega as opções de montagem do localStorage ou inicializa com padrão
- * VERSÃO REFATORADA - Mais robusta e com melhor tratamento de dados
- */
-function carregarOpcoesMontagem() {
-    try {
-        const opcoesSalvas = localStorage.getItem("opcoesMontagemPizzaria");
-        
-        if (opcoesSalvas) {
-            const dados = JSON.parse(opcoesSalvas);
-            
-            // Valida e migra dados se necessário
-            opcoesMontagem = validarEMigrarDados(dados);
+// Mostra uma seção da interface e esconde as outras
+function mostrarSecao(secao) {
+    const secoes = ["cadastro", "consulta", "alterar", "monte-sua-pizza", "venda", "relatorio"];
+    secoes.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.classList.add("hidden"); // Oculta todas as seções
+    });
+    const secaoAtiva = document.getElementById(secao);
+    if (secaoAtiva) {
+        secaoAtiva.classList.remove("hidden"); // Exibe a seção desejada
+        if (secao === "monte-sua-pizza") {
+            carregarOpcoesMontagem();
+            atualizarTabelasOpcoesMontagem();
+        }
+    }
+}
+
+// Adiciona uma nova pizza ao cardápio principal
+function adicionarPizza() {
+    const nome = document.getElementById("titulo").value;
+    const ingredientes = document.getElementById("ingredientes").value;
+    const preco = parseFloat(document.getElementById("preco").value);
+
+    if (nome && ingredientes && !isNaN(preco) && preco > 0) {
+        cardapio.push({ nome, ingredientes, preco }); // Adiciona pizza ao array
+        localStorage.setItem("cardapioPizzaria", JSON.stringify(cardapio)); // Salva no localStorage
+        // Limpa os campos do formulário
+        document.getElementById("titulo").value = "";
+        document.getElementById("ingredientes").value = "";
+        document.getElementById("preco").value = "";
+        atualizarLista();
+        showPopup("Pizza cadastrada com sucesso!", "success");
+    } else {
+        showPopup("Por favor, preencha todos os campos com valores válidos.", "error");
+    }
+}
+
+// Atualiza a lista de pizzas exibida na seção de consulta
+function atualizarLista(listaFiltrada = cardapio) {
+    let lista = document.getElementById("lista-pizzas");
+    if (!lista) return;
+    lista.innerHTML = ""; // Limpa a lista antes de popular
+
+    listaFiltrada.forEach((pizza, index) => {
+        const originalIndex = cardapio.findIndex(p => p.nome === pizza.nome && p.preco === pizza.preco);
+        if (originalIndex === -1) return; // Evita erro se não encontrar
+        let linha = `<tr>
+                        <td>${pizza.nome}</td>
+                        <td>${pizza.ingredientes}</td>
+                        <td>R$${pizza.preco.toFixed(2)}</td>
+                        <td>
+                            <button class="btn-excluir" onclick="excluirPizza(${originalIndex})">
+                                <i class="fas fa-trash-alt"></i> Excluir
+                            </button>
+                        </td>
+                    </tr>`;
+        lista.innerHTML += linha; // Insere linha na tabela
+    });
+}
+
+// Exclui uma pizza do cardápio principal
+function excluirPizza(index) {
+    if (index < 0 || index >= cardapio.length) {
+        showPopup("Erro ao encontrar pizza para excluir.", "error");
+        return;
+    }
+    const nomePizza = cardapio[index].nome;
+    cardapio.splice(index, 1); // Remove a pizza do array
+    localStorage.setItem("cardapioPizzaria", JSON.stringify(cardapio)); // Atualiza localStorage
+    atualizarLista();
+    showPopup(`Pizza '${nomePizza}' excluída com sucesso!`, "success");
+}
+
+// Filtra pizzas pelo nome na seção de consulta
+function buscarPizza() {
+    const busca = document.getElementById("busca").value.toLowerCase();
+    const resultados = cardapio.filter(pizza =>
+        pizza.nome.toLowerCase().includes(busca)
+    );
+    atualizarLista(resultados);
+}
+
+// Localiza uma pizza para ser alterada e exibe o formulário
+function buscarPizzaParaAlterar() {
+    const busca = document.getElementById("busca-alterar").value.toLowerCase();
+    const index = cardapio.findIndex(pizza => pizza.nome.toLowerCase().includes(busca));
+
+    if (index !== -1) {
+        pizzaParaAlterar = { ...cardapio[index], originalIndex: index }; // Clona pizza para alterar
+        document.getElementById("form-alterar").classList.remove("hidden");
+        document.getElementById("novo-nome").value = pizzaParaAlterar.nome;
+        document.getElementById("novo-ingredientes").value = pizzaParaAlterar.ingredientes;
+        document.getElementById("novo-preco").value = pizzaParaAlterar.preco;
+    } else {
+        pizzaParaAlterar = null;
+        document.getElementById("form-alterar").classList.add("hidden");
+        showPopup("Pizza não encontrada.", "info");
+    }
+}
+
+// Aplica as alterações feitas à pizza selecionada
+function alterarPizza() {
+    if (pizzaParaAlterar && pizzaParaAlterar.originalIndex !== undefined) {
+        const novoNome = document.getElementById("novo-nome").value;
+        const novoIngredientes = document.getElementById("novo-ingredientes").value;
+        const novoPreco = parseFloat(document.getElementById("novo-preco").value);
+
+        if (novoNome && novoIngredientes && !isNaN(novoPreco) && novoPreco > 0) {
+            cardapio[pizzaParaAlterar.originalIndex] = { nome: novoNome, ingredientes: novoIngredientes, preco: novoPreco };
+            localStorage.setItem("cardapioPizzaria", JSON.stringify(cardapio));
+            atualizarLista();
+            showPopup("Pizza alterada com sucesso!", "success");
+            document.getElementById("form-alterar").classList.add("hidden");
+            pizzaParaAlterar = null;
+            document.getElementById("busca-alterar").value = "";
         } else {
-            // Dados padrão com IDs únicos
-            opcoesMontagem = {
-                tamanhos: [
-                    { id: 1, nome: "Média - Massa Tradicional", preco: 40.00 },
-                    { id: 2, nome: "Grande - Massa Tradicional", preco: 50.00 }
-                ],
-                ingredientes: [
-                    { id: 1, nome: "Calabresa Fatiada", preco: 6.00 },
-                    { id: 2, nome: "Queijo Mussarela", preco: 0.00 }
-                ],
-                bordas: [
-                    { id: 1, nome: "Sem Borda Recheada", preco: 0.00 },
-                    { id: 2, nome: "Catupiry Original", preco: 10.00 }
-                ]
-            };
-            
-            // Atualiza contadores baseado nos dados padrão
-            atualizarContadores();
-            salvarOpcoesMontagem();
+            showPopup("Por favor, preencha todos os campos com valores válidos.", "error");
         }
-        
-        console.log("Opções de montagem carregadas com sucesso:", opcoesMontagem);
-        
-    } catch (error) {
-        console.error("Erro ao carregar opções de montagem:", error);
-        showPopup("Erro ao carregar dados. Usando configuração padrão.", "error");
-        
-        // Fallback para dados padrão em caso de erro
+    }
+}
+
+// --- Funções de Gerenciamento "Monte Sua Pizza" ---
+
+// Carrega as opções de montagem do localStorage ou inicializa com padrão
+function carregarOpcoesMontagem() {
+    const opcoesSalvas = localStorage.getItem("opcoesMontagemPizzaria");
+    if (opcoesSalvas) {
+        opcoesMontagem = JSON.parse(opcoesSalvas);
+    } else {
         opcoesMontagem = {
-            tamanhos: [{ id: 1, nome: "Média - Massa Tradicional", preco: 40.00 }],
-            ingredientes: [{ id: 1, nome: "Queijo Mussarela", preco: 0.00 }],
-            bordas: [{ id: 1, nome: "Sem Borda Recheada", preco: 0.00 }]
+            tamanhos: [
+                { nome: "Média - Massa Tradicional", preco: 40.00 },
+                { nome: "Grande - Massa Tradicional", preco: 50.00 }
+            ],
+            ingredientes: [
+                { nome: "Calabresa Fatiada", preco: 6.00 },
+                { nome: "Queijo Mussarela", preco: 0.00 }
+            ],
+            bordas: [
+                { nome: "Sem Borda Recheada", preco: 0.00 },
+                { nome: "Catupiry Original", preco: 10.00 }
+            ]
         };
-        atualizarContadores();
+        salvarOpcoesMontagem();
     }
 }
 
-/**
- * Valida e migra dados antigos para nova estrutura com IDs
- */
-function validarEMigrarDados(dados) {
-    const dadosValidados = {
-        tamanhos: [],
-        ingredientes: [],
-        bordas: []
-    };
-    
-    // Processa cada tipo de opção
-    ['tamanhos', 'ingredientes', 'bordas'].forEach(tipo => {
-        if (dados[tipo] && Array.isArray(dados[tipo])) {
-            dados[tipo].forEach((item, index) => {
-                // Se o item já tem ID, mantém; senão, cria um novo
-                const id = item.id || (contadorIds[tipo]++);
-                
-                dadosValidados[tipo].push({
-                    id: id,
-                    nome: item.nome || `Item ${id}`,
-                    preco: typeof item.preco === 'number' ? item.preco : 0
-                });
-            });
-        }
-    });
-    
-    // Atualiza contadores para próximos IDs
-    atualizarContadores();
-    
-    return dadosValidados;
-}
-
-/**
- * Atualiza os contadores de ID baseado nos dados existentes
- */
-function atualizarContadores() {
-    ['tamanhos', 'ingredientes', 'bordas'].forEach(tipo => {
-        if (opcoesMontagem[tipo] && opcoesMontagem[tipo].length > 0) {
-            const maiorId = Math.max(...opcoesMontagem[tipo].map(item => item.id || 0));
-            contadorIds[tipo] = maiorId + 1;
-        }
-    });
-}
-
-/**
- * Salva as opções de montagem no localStorage
- * VERSÃO REFATORADA - Com tratamento de erro
- */
+// Salva as opções de montagem no localStorage
 function salvarOpcoesMontagem() {
-    try {
-        localStorage.setItem("opcoesMontagemPizzaria", JSON.stringify(opcoesMontagem));
-        console.log("Opções de montagem salvas com sucesso");
-        return true;
-    } catch (error) {
-        console.error("Erro ao salvar opções de montagem:", error);
-        showPopup("Erro ao salvar dados. Tente novamente.", "error");
-        return false;
-    }
+    localStorage.setItem("opcoesMontagemPizzaria", JSON.stringify(opcoesMontagem));
 }
 
-// ========================================
-// FUNÇÕES DE INTERFACE E ATUALIZAÇÃO
-// ========================================
-
-/**
- * Atualiza as tabelas de gerenciamento de opções na interface administrativa
- * VERSÃO REFATORADA - Mais robusta e com melhor tratamento de erros
- */
+// Atualiza as tabelas de gerenciamento de opções na interface administrativa
 function atualizarTabelasOpcoesMontagem() {
     const tabelas = {
         tamanhos: document.getElementById("lista-tamanhos"),
@@ -148,335 +182,179 @@ function atualizarTabelasOpcoesMontagem() {
         bordas: document.getElementById("lista-bordas-admin")
     };
 
-    try {
-        for (const tipo in tabelas) {
-            const tabela = tabelas[tipo];
-            
-            if (!tabela) {
-                console.warn(`Tabela ${tipo} não encontrada no DOM`);
-                continue;
+    for (const tipo in tabelas) {
+        if (tabelas[tipo]) {
+            tabelas[tipo].innerHTML = ""; // Limpa tabela
+            if (opcoesMontagem[tipo]) {
+                opcoesMontagem[tipo].forEach((item, index) => {
+                    const podeExcluir = !(tipo === "bordas" && item.nome === "Sem Borda Recheada");
+                    const botaoExcluirHTML = podeExcluir
+                        ? `<td><button class="btn-excluir" onclick="excluirOpcaoMontagem('${tipo}', ${index})"><i class="fas fa-trash-alt"></i></button></td>`
+                        : "<td></td>";
+
+                    const linha = `<tr>
+                                    <td>${item.nome}</td>
+                                    <td>R$${item.preco.toFixed(2)}</td>
+                                    ${botaoExcluirHTML}
+                                 </tr>`;
+                    tabelas[tipo].innerHTML += linha; // Insere linha na tabela
+                });
             }
-            
-            // Limpa tabela
-            tabela.innerHTML = "";
-            
-            // Verifica se existem dados para este tipo
-            if (!opcoesMontagem[tipo] || !Array.isArray(opcoesMontagem[tipo])) {
-                tabela.innerHTML = "<tr><td colspan='3'>Nenhum item cadastrado</td></tr>";
-                continue;
-            }
-            
-            // Popula tabela com dados
-            opcoesMontagem[tipo].forEach((item) => {
-                const linha = criarLinhaTabela(tipo, item);
-                tabela.insertAdjacentHTML('beforeend', linha);
-            });
         }
-        
-        console.log("Tabelas atualizadas com sucesso");
-        
-    } catch (error) {
-        console.error("Erro ao atualizar tabelas:", error);
-        showPopup("Erro ao atualizar interface. Recarregue a página.", "error");
     }
 }
 
-/**
- * Cria HTML para uma linha da tabela
- */
-function criarLinhaTabela(tipo, item) {
-    const podeExcluir = !(tipo === "bordas" && item.nome === "Sem Borda Recheada");
-    const botaoExcluir = podeExcluir 
-        ? `<button class="btn-excluir" onclick="excluirOpcaoMontagem('${tipo}', ${item.id})">
-             <i class="fas fa-trash-alt"></i>
-           </button>`
-        : '<span class="texto-protegido">Protegido</span>';
-
-    return `
-        <tr data-id="${item.id}">
-            <td>${item.nome}</td>
-            <td>R$ ${item.preco.toFixed(2)}</td>
-            <td>${botaoExcluir}</td>
-        </tr>
-    `;
-}
-
-// ========================================
-// FUNÇÕES DE ADIÇÃO E REMOÇÃO
-// ========================================
-
-/**
- * Adiciona uma nova opção de montagem (tamanho, ingrediente ou borda)
- * VERSÃO REFATORADA - Mais robusta e com melhor validação
- */
+// Adiciona uma nova opção de montagem (tamanho, ingrediente ou borda)
 function adicionarOpcaoMontagem(tipo) {
-    console.log(`Iniciando adição de ${tipo}`);
-    
-    try {
-        // Valida tipo
-        if (!['tamanhos', 'ingredientes', 'bordas'].includes(tipo)) {
-            throw new Error(`Tipo inválido: ${tipo}`);
-        }
-        
-        // Obtém elementos de input
-        const inputs = obterInputsPorTipo(tipo);
-        if (!inputs.nomeInput || !inputs.precoInput) {
-            throw new Error(`Elementos de input não encontrados para ${tipo}`);
-        }
-        
-        // Obtém e valida dados
-        const nome = inputs.nomeInput.value.trim();
-        const precoStr = inputs.precoInput.value.trim();
-        const preco = parseFloat(precoStr);
-        
-        console.log(`Dados obtidos - Nome: "${nome}", Preço: "${precoStr}" (${preco})`);
-        
-        // Validações
-        if (!nome) {
-            throw new Error("Nome é obrigatório");
-        }
-        
-        if (isNaN(preco) || preco < 0) {
-            throw new Error("Preço deve ser um número válido maior ou igual a zero");
-        }
-        
-        // Verifica duplicatas
-        if (verificarDuplicata(tipo, nome)) {
-            throw new Error(`A opção "${nome}" já existe em ${tipo}`);
-        }
-        
-        // Cria novo item
-        const novoItem = {
-            id: contadorIds[tipo]++,
-            nome: nome,
-            preco: preco
-        };
-        
-        // Adiciona ao array
-        if (!opcoesMontagem[tipo]) {
-            opcoesMontagem[tipo] = [];
-        }
-        opcoesMontagem[tipo].push(novoItem);
-        
-        // Salva dados
-        if (!salvarOpcoesMontagem()) {
-            throw new Error("Falha ao salvar dados");
-        }
-        
-        // Atualiza interface
-        atualizarTabelasOpcoesMontagem();
-        
-        // Limpa campos
-        inputs.nomeInput.value = "";
-        inputs.precoInput.value = "";
-        
-        // Feedback de sucesso
-        showPopup(`"${nome}" adicionado com sucesso!`, "success");
-        console.log(`${tipo} adicionado com sucesso:`, novoItem);
-        
-    } catch (error) {
-        console.error(`Erro ao adicionar ${tipo}:`, error);
-        showPopup(`Erro: ${error.message}`, "error");
+    let nomeInput, precoInput;
+
+    if (tipo === "tamanhos") {
+        nomeInput = document.getElementById("tamanho-nome");
+        precoInput = document.getElementById("tamanho-preco");
+    } else if (tipo === "ingredientes") {
+        nomeInput = document.getElementById("ingrediente-nome");
+        precoInput = document.getElementById("ingrediente-preco");
+    } else if (tipo === "bordas") {
+        nomeInput = document.getElementById("borda-nome");
+        precoInput = document.getElementById("borda-preco");
+    } else {
+        return;
     }
-}
 
-/**
- * Obtém elementos de input baseado no tipo
- */
-function obterInputsPorTipo(tipo) {
-    const mapeamento = {
-        tamanhos: {
-            nomeInput: document.getElementById("tamanho-nome"),
-            precoInput: document.getElementById("tamanho-preco")
-        },
-        ingredientes: {
-            nomeInput: document.getElementById("ingrediente-nome"),
-            precoInput: document.getElementById("ingrediente-preco")
-        },
-        bordas: {
-            nomeInput: document.getElementById("borda-nome"),
-            precoInput: document.getElementById("borda-preco")
-        }
-    };
-    
-    return mapeamento[tipo] || {};
-}
+    const nome = nomeInput.value.trim();
+    const preco = parseFloat(precoInput.value);
 
-/**
- * Verifica se já existe um item com o mesmo nome
- */
-function verificarDuplicata(tipo, nome) {
-    if (!opcoesMontagem[tipo]) return false;
-    
-    return opcoesMontagem[tipo].some(item => 
-        item.nome.toLowerCase() === nome.toLowerCase()
-    );
-}
-
-/**
- * Exclui uma opção de montagem
- * VERSÃO REFATORADA - Usa ID em vez de índice
- */
-function excluirOpcaoMontagem(tipo, id) {
-    console.log(`Iniciando exclusão de ${tipo} com ID ${id}`);
-    
-    try {
-        // Valida tipo
-        if (!['tamanhos', 'ingredientes', 'bordas'].includes(tipo)) {
-            throw new Error(`Tipo inválido: ${tipo}`);
-        }
-        
-        // Verifica se o array existe
-        if (!opcoesMontagem[tipo] || !Array.isArray(opcoesMontagem[tipo])) {
-            throw new Error(`Array ${tipo} não encontrado`);
-        }
-        
-        // Encontra o item
-        const index = opcoesMontagem[tipo].findIndex(item => item.id === id);
-        if (index === -1) {
-            throw new Error(`Item com ID ${id} não encontrado em ${tipo}`);
-        }
-        
-        const item = opcoesMontagem[tipo][index];
-        
-        // Proteção para "Sem Borda Recheada"
-        if (tipo === "bordas" && item.nome === "Sem Borda Recheada") {
-            throw new Error("A opção 'Sem Borda Recheada' não pode ser excluída");
-        }
-        
-        // Confirma exclusão
-        if (!confirm(`Tem certeza que deseja excluir "${item.nome}"?`)) {
+    if (nome && !isNaN(preco) && preco >= 0) {
+        if (!opcoesMontagem[tipo]) opcoesMontagem[tipo] = []; // Garante que array existe
+        const existe = opcoesMontagem[tipo].some(item => item.nome.toLowerCase() === nome.toLowerCase());
+        if (existe) {
+            showPopup(`Erro: A opção '${nome}' já existe em ${tipo}.`, "error");
             return;
         }
-        
-        // Remove do array
-        opcoesMontagem[tipo].splice(index, 1);
-        
-        // Salva dados
-        if (!salvarOpcoesMontagem()) {
-            throw new Error("Falha ao salvar dados após exclusão");
+        opcoesMontagem[tipo].push({ nome, preco }); // Adiciona nova opção
+        salvarOpcoesMontagem();
+        atualizarTabelasOpcoesMontagem();
+        nomeInput.value = "";
+        precoInput.value = "";
+        showPopup(`Opção '${nome}' adicionada com sucesso!`, "success");
+    } else {
+        showPopup("Por favor, preencha o nome e um preço válido (pode ser 0).", "error");
+    }
+}
+
+// Exclui uma opção de montagem
+function excluirOpcaoMontagem(tipo, index) {
+    if (!opcoesMontagem[tipo] || index < 0 || index >= opcoesMontagem[tipo].length) {
+        showPopup("Erro ao encontrar opção para excluir.", "error");
+        return;
+    }
+
+    if (tipo === "bordas" && opcoesMontagem[tipo][index].nome === "Sem Borda Recheada") {
+        showPopup("A opção 'Sem Borda Recheada' não pode ser excluída.", "info");
+        return;
+    }
+
+    const nomeOpcao = opcoesMontagem[tipo][index].nome;
+    opcoesMontagem[tipo].splice(index, 1); // Remove do array
+    salvarOpcoesMontagem();
+    atualizarTabelasOpcoesMontagem();
+    showPopup(`Opção '${nomeOpcao}' excluída com sucesso!`, "success");
+}
+
+// --- Funções de Venda e Relatório ---
+
+// Registra uma venda no sistema
+function registrarVenda() {
+    const nomePizza = document.getElementById("venda-titulo").value;
+    const precoPizza = parseFloat(document.getElementById("venda-preco").value);
+    const comprador = document.getElementById("venda-comprador").value;
+
+    if (nomePizza && !isNaN(precoPizza) && precoPizza > 0 && comprador) {
+        const venda = {
+            pizza: nomePizza,
+            preco: precoPizza,
+            comprador: comprador,
+            data: new Date().toLocaleString()
+        };
+        let vendas = JSON.parse(localStorage.getItem("vendasPizzaria") || "[]");
+        vendas.push(venda);
+        localStorage.setItem("vendasPizzaria", JSON.stringify(vendas));
+
+        const listaVendas = document.getElementById("lista-vendas");
+        if (listaVendas) {
+            const item = document.createElement("li");
+            item.textContent = `Pizza: ${nomePizza}, Preço: R$${precoPizza.toFixed(2)}, Comprador: ${comprador}`;
+            listaVendas.appendChild(item);
         }
-        
-        // Atualiza interface
-        atualizarTabelasOpcoesMontagem();
-        
-        // Feedback de sucesso
-        showPopup(`"${item.nome}" excluído com sucesso!`, "success");
-        console.log(`${tipo} excluído com sucesso:`, item);
-        
-    } catch (error) {
-        console.error(`Erro ao excluir ${tipo}:`, error);
-        showPopup(`Erro: ${error.message}`, "error");
+        // Limpa campos
+        document.getElementById("venda-titulo").value = "";
+        document.getElementById("venda-preco").value = "";
+        document.getElementById("venda-comprador").value = "";
+        showPopup("Venda registrada com sucesso!", "success");
+    } else {
+        showPopup("Preencha todos os campos da venda corretamente!", "error");
     }
 }
+// Exibe a seção de vendas e carrega as vendas registradas
+// Função para gerar relatório de vendas
+function gerarRelatorioVendas() {
+    mostrarSecao("relatorio");  // Exibe a seção de relatório, escondendo as outras seções.
 
-// ========================================
-// INTEGRAÇÃO COM SISTEMA EXISTENTE
-// ========================================
+    // Recupera do localStorage o array de objetos de vendas, ou um array vazio se não houver vendas.
+    const vendas = JSON.parse(localStorage.getItem("vendasPizzaria") || "[]");
 
-/**
- * Função para integrar com a função mostrarSecao existente
- * Chama esta função quando a seção "monte-sua-pizza" for ativada
- */
-function inicializarSecaoMonteSuaPizza() {
-    console.log("Inicializando seção Monte Sua Pizza...");
+    // Obtém a referência à tabela onde será exibido o relatório.
+    const tabelaRelatorio = document.getElementById("tabela-relatorio-vendas");
     
-    try {
-        carregarOpcoesMontagem();
-        atualizarTabelasOpcoesMontagem();
-        console.log("Seção Monte Sua Pizza inicializada com sucesso");
-    } catch (error) {
-        console.error("Erro ao inicializar seção Monte Sua Pizza:", error);
-        showPopup("Erro ao carregar seção. Recarregue a página.", "error");
+    if (!tabelaRelatorio) return;  // Caso a tabela não exista no HTML, interrompe a função.
+
+    tabelaRelatorio.innerHTML = "";  // Limpa o conteúdo da tabela antes de adicionar os dados.
+
+    if (vendas.length === 0) {  // Se não houver vendas registradas.
+        tabelaRelatorio.innerHTML = "<tr><td colspan='3'>Nenhuma venda registrada</td></tr>";
+        return;  // Sai da função.
     }
-}
 
-// ========================================
-// MODIFICAÇÃO DA FUNÇÃO EXISTENTE
-// ========================================
+    let totalVendas = 0;  // Variável para acumular o total das vendas.
 
-/**
- * SUBSTITUA a função mostrarSecao existente por esta versão
- * que inclui a inicialização da seção Monte Sua Pizza
- */
-function mostrarSecao(secao) {
-    const secoes = ["cadastro", "consulta", "alterar", "monte-sua-pizza", "venda", "relatorio"];
-    
-    // Esconde todas as seções
-    secoes.forEach(id => {
-        const elemento = document.getElementById(id);
-        if (elemento) elemento.classList.add("hidden");
+    // Percorre cada venda no array 'vendas'.
+    vendas.forEach(venda => {
+        // Cria uma nova linha de tabela com os dados da venda: nome da pizza, preço, comprador e data.
+        let linha = `<tr>
+                        <td>${venda.pizza}</td>
+                        <td>R$${venda.preco.toFixed(2)}</td>
+                        <td>${venda.comprador}</td>
+                        <td>${venda.data}</td>
+                    </tr>`;
+        
+        // Adiciona a linha à tabela de relatório.
+        tabelaRelatorio.innerHTML += linha;
+
+        // Soma o preço da venda ao total.
+        totalVendas += venda.preco;
     });
-    
-    // Mostra a seção desejada
-    const secaoAtiva = document.getElementById(secao);
-    if (secaoAtiva) {
-        secaoAtiva.classList.remove("hidden");
-        
-        // Inicialização específica para Monte Sua Pizza
-        if (secao === "monte-sua-pizza") {
-            inicializarSecaoMonteSuaPizza();
-        }
-    }
+
+    // Adiciona uma linha ao final da tabela com o total de todas as vendas.
+    const linhaTotal = `<tr>
+                            <td colspan="1"><strong>Total</strong></td>
+                            <td><strong>R$${totalVendas.toFixed(2)}</strong></td>
+                            <td colspan="2"></td>
+                       </tr>`;
+    tabelaRelatorio.innerHTML += linhaTotal;  // Insere a linha de total na tabela.
 }
 
-// ========================================
-// INICIALIZAÇÃO AUTOMÁTICA
-// ========================================
+// --- Inicialização --- 
 
-// Garante que a inicialização aconteça quando o DOM estiver pronto
-document.addEventListener("DOMContentLoaded", function() {
-    // Se a seção Monte Sua Pizza já estiver visível, inicializa
-    const secaoMontagem = document.getElementById("monte-sua-pizza");
-    if (secaoMontagem && !secaoMontagem.classList.contains("hidden")) {
-        inicializarSecaoMonteSuaPizza();
-    }
+// Aguarda o carregamento completo do DOM (Document Object Model).
+document.addEventListener("DOMContentLoaded", () => {
+    carregarCardapio();  // Função que carrega e exibe o cardápio de pizzas disponíveis.
+    carregarOpcoesMontagem();  // Função que carrega as opções para montagem de pizzas.
+    // A atualização das tabelas de montagem ocorre ao clicar no menu, evitando carregamento automático.
 });
 
-// ========================================
-// FUNÇÕES DE UTILIDADE
-// ========================================
 
-/**
- * Função para debug - mostra estado atual dos dados
- */
-function debugOpcoesMontagem() {
-    console.log("=== DEBUG OPÇÕES MONTAGEM ===");
-    console.log("Dados atuais:", opcoesMontagem);
-    console.log("Contadores:", contadorIds);
-    console.log("LocalStorage:", localStorage.getItem("opcoesMontagemPizzaria"));
-    console.log("=============================");
-}
 
-/**
- * Função para limpar todos os dados (use com cuidado!)
- */
-function limparDadosMontagem() {
-    if (confirm("ATENÇÃO: Isso irá apagar TODOS os dados de montagem. Continuar?")) {
-        localStorage.removeItem("opcoesMontagemPizzaria");
-        opcoesMontagem = { tamanhos: [], ingredientes: [], bordas: [] };
-        contadorIds = { tamanhos: 1, ingredientes: 1, bordas: 1 };
-        atualizarTabelasOpcoesMontagem();
-        showPopup("Dados limpos com sucesso!", "info");
-    }
-}
-
-// ========================================
-// EXPORTAÇÃO PARA CONSOLE (DEBUG)
-// ========================================
-
-// Disponibiliza funções no console para debug
-window.debugMontagem = {
-    mostrarDados: debugOpcoesMontagem,
-    limparDados: limparDadosMontagem,
-    recarregar: inicializarSecaoMonteSuaPizza,
-    dados: () => opcoesMontagem
-};
-
-console.log("🍕 Sistema Monte Sua Pizza (Admin) carregado!");
-console.log("💡 Use 'debugMontagem' no console para funções de debug");
-
-// ========================================
-// FIM DO CÓDIGO REFATORADO
-// ========================================
-
+showPopup
+// showPopup - provavelmente há uma função chamada 'showPopup' mais abaixo ou em outro arquivo
+// responsável por exibir uma janela pop-up (modal) com informações ou mensagens ao usuário.
+// Aqui está apenas a referência, talvez seja chamada ou configurada a seguir.

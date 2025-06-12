@@ -569,12 +569,12 @@ function atualizarContadorCarrinho() { //
 }
 
 function atualizarCarrinhoUI() {
-    const carrinhoItensDiv = document.getElementById("carrinho-itens"); // Div onde os itens do carrinho serão exibidos
-    const carrinhoVazioDiv = document.getElementById("carrinho-vazio"); // Div exibida quando o carrinho está vazio
-    const carrinhoResumoDiv = document.getElementById("carrinho-resumo"); // Div onde o resumo do carrinho é exibido
-    const subtotalSpan = document.getElementById("subtotal-valor"); // Span onde o subtotal é exibido
-    const totalSpan = document.getElementById("total-valor"); // Span onde o total é exibido
-    const taxaEntrega = 10.00; // Exemplo de taxa fixa, pode ser ajustada conforme necessário, como calcular a partir da rota ou distância.
+    const carrinhoItensDiv = document.getElementById("carrinho-itens");
+    const carrinhoVazioDiv = document.getElementById("carrinho-vazio");
+    const carrinhoResumoDiv = document.getElementById("carrinho-resumo");
+    const subtotalSpan = document.getElementById("subtotal-valor");
+    const totalSpan = document.getElementById("total-valor");
+    const taxaEntrega = 10.00; // Exemplo de taxa fixa
 
     if (!carrinhoItensDiv || !carrinhoVazioDiv || !carrinhoResumoDiv || !subtotalSpan || !totalSpan) return;
 
@@ -595,8 +595,8 @@ function atualizarCarrinhoUI() {
         });
 
         // Reconfigura listener de remoção usando delegação
-        carrinhoItensDiv.removeEventListener("click", handleRemoverItemCarrinho); // Remover listener antigo
-        carrinhoItensDiv.addEventListener("click", handleRemoverItemCarrinho); // Adicionar novo listener
+        carrinhoItensDiv.removeEventListener("click", handleRemoverItemCarrinho);
+        carrinhoItensDiv.addEventListener("click", handleRemoverItemCarrinho);
 
         const total = subtotal + taxaEntrega;
         subtotalSpan.textContent = `R$ ${subtotal.toFixed(2)}`;
