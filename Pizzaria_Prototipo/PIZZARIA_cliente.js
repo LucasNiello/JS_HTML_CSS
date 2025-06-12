@@ -742,3 +742,5 @@ function configurarFinalizarPedido() {
                                             /////////////////
                                             //FIM do código//
                                             /////////////////
+
+                                            // FIM do código //
