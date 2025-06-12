@@ -1,25 +1,19 @@
 // --- Função para Exibir Pop-up de Mensagem ---
 
-/**
- * Exibe uma mensagem pop-up temporária na tela.
- *
- * @param {string} mensagem - O texto que será exibido na janela pop-up.
- *                            Exemplo: "Operação realizada com sucesso!"
- *
- * @param {string} [tipo="info"] - O tipo de mensagem, que será usado para definir
- *                                 a estilização via classes CSS.
- *                                 Pode ser:
- *                                  - "success": para mensagens de sucesso.
- *                                  - "error": para mensagens de erro.
- *                                  - "info": para mensagens informativas (valor padrão).
- *                                 Se não for informado, o padrão será "info".
- *
- * @param {number} [duracao=2000] - O tempo, em milissegundos, que a mensagem
- *                                  ficará visível na tela antes de desaparecer.
- *                                  Por padrão, a duração é 2000 ms (ou seja, 2 segundos).
-// ✅ Para que serve o @Param?
-// Serve para descrever um parâmetro de uma função, método ou procedimento. Ela ajuda a documentar o propósito, o tipo e quaisquer restrições ou comportamentos esperados de cada parâmetro que a função recebe.
- */
+// Esta função mostra uma mensagem pop-up temporária na tela.
+//
+// Parâmetros:
+// - mensagem (string): o texto que será exibido na janela pop-up.
+//   Exemplo: "Operação realizada com sucesso!"
+//
+// - tipo (string) [opcional, padrão = "info"]: define o estilo do pop-up com base no tipo.
+//   Pode ser:
+//     - "success" → para mensagens de sucesso
+//     - "error"   → para mensagens de erro
+//     - "info"    → para mensagens informativas (valor padrão)
+//
+// - duracao (number) [opcional, padrão = 2000]: o tempo em milissegundos que a mensagem
+//   ficará visível na tela antes de desaparecer. Exemplo: 3000 = 3 segundos.
 function showPopup(mensagem, tipo = "info", duracao = 2000) {
     // Verifica se já existe um popup com o ID "popup-global" na tela
     const popupExistente = document.getElementById("popup-global");

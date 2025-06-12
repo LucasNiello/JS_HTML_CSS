@@ -1015,3 +1015,7 @@ footer {
     background-color: #2196F3; /* Azul */
 }
 
+#nota-fiscal h3 {
+    color: var(--dourado-principal);
+    text-align: right;
+}
