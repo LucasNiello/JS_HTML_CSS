@@ -60,7 +60,8 @@ function adicionarFiltroAdmin() {
         categoriaBotao.className = "filtro-btn";
         categoriaBotao.setAttribute("data-categoria", "admin");
         categoriaBotao.textContent = "Do Administrador";
-        // Insere antes do último botão (se houver) ou no final
+
+        // Verifica se já existem outros botões de filtro
         const ultimoBotao = filtroCategorias.lastElementChild;
         if (ultimoBotao) {
              filtroCategorias.insertBefore(categoriaBotao, ultimoBotao);
